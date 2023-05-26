@@ -21,11 +21,11 @@ impl Spin for Ising {
     fn dot(&mut self, _vec: &Self::V) -> f64 {
         self.data as f64
     }
-    fn flip(&mut self, _vec: &Self::V) {
-        self.data *= -1
+    fn flip(&mut self, _vec: &Self::V, success: bool) {
+        self.data *= 1 - 2 * (success as i32)
     }
     fn norm(&self) -> f64 {
-        self.data as f64
+        (self.data as f64).abs()
     }
     fn random_vec() -> Self::V {
         0
@@ -91,7 +91,7 @@ impl<T: Copy> SmallVec<T> {
 
 pub trait Spin: for <'a> AddAssign<&'a Self> + Sized + Debug {
     type V;
-    fn flip(&mut self, vec: &Self::V);
+    fn flip(&mut self, vec: &Self::V, success: bool);
     fn dot(&mut self, vec: &Self::V) -> f64;
     fn random_vec() -> Self::V;
     fn zero() -> Self;

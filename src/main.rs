@@ -1,41 +1,44 @@
 #![allow(dead_code)]
 mod lattice;
 mod spin;
+mod funcs;
 use lattice::Lattice;
-use spin::{Ising, SmallVec};
+use spin::Ising;
+use funcs::{square, SQUARE_ROW_SIZE};
+
+fn linspace(start: f64, end: f64, count: usize) -> Vec<f64> {
+    if count == 1 {
+        return vec![start];
+    }
+    let delta = (end - start) / (count - 1) as f64;
+    let mut out = Vec::with_capacity(count);
+    for i in 0..count {
+        out.push(start + delta * i as f64);
+    }
+    out
+}
 
 fn main() {
-    let row_size = 100;
-    let mut square_periodic_lattice = Lattice::<Ising>::new(row_size*row_size,
-        |site: usize| -> SmallVec<usize> {
-            let mut neighbors = SmallVec::new();
-            if site % row_size != 0 {
-                neighbors.push(site - 1)
-            } else {
-                neighbors.push(site + row_size - 1)
-            }
-            if site % row_size != row_size - 1 {
-                neighbors.push(site + 1)
-            } else {
-                neighbors.push(site - row_size + 1)
-            }
-            if site / row_size != 0 {
-                neighbors.push(site - row_size)
-            } else {
-                neighbors.push(row_size * (row_size-1) + site)
-            }
-            if site / row_size != row_size - 1 {
-                neighbors.push(site + row_size)
-            } else {
-                neighbors.push(site - row_size * (site / row_size))
-            }
-            neighbors
-        }
+    // let mut lattice = Lattice::<Ising>::new(
+    //     SQUARE_ROW_SIZE*SQUARE_ROW_SIZE, square
+    // );
+    let mut lattice = Lattice::<Ising>::new(
+        SQUARE_ROW_SIZE*SQUARE_ROW_SIZE, square
     );
 
     let n_trials = 1000;
-    for beta in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0] {
-        println!("Beta {}, param {}", beta, square_periodic_lattice.run(beta, n_trials));
-        square_periodic_lattice.zero();
+    let mut order_params = Vec::new();
+    let mut susceptibilities = Vec::new();
+    let betas = linspace(0.4, 0.5, 11);
+    for beta in &betas {
+        let result = lattice.run(*beta, n_trials);
+        order_params.push(result.order_parameter);
+        susceptibilities.push(result.susceptibility);
+        println!("Beta {}: {}", beta, result);
+        lattice.zero();
     }
+
+    println!("{:?}", betas);
+    println!("{:?}", order_params);
+    println!("{:?}", susceptibilities);
 }
