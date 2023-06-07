@@ -1,13 +1,20 @@
 use std::ops::AddAssign;
 use std::fmt::Debug;
 
-use rand::random;
+use rand::prelude::*;
+use rand_distr::StandardNormal;
 
-const MAX_NEIGHBORS: usize = 8;
+const MAX_NEIGHBORS: usize = 12;
 
 #[derive(Debug)]
 pub struct Ising {
     data: i32,
+}
+
+#[derive(Debug)]
+pub struct XY {
+    x: f32,
+    y: f32,
 }
 
 impl<'a> AddAssign<&'a Self> for Ising {
@@ -16,16 +23,23 @@ impl<'a> AddAssign<&'a Self> for Ising {
     }
 }
 
+impl<'a> AddAssign<&'a Self> for XY {
+    fn add_assign(&mut self, rhs: &'a Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
+}
+
 impl Spin for Ising {
     type V = u8;
-    fn dot(&mut self, _vec: &Self::V) -> f64 {
-        self.data as f64
+    fn dot(&mut self, _vec: &Self::V) -> f32 {
+        self.data as f32
     }
     fn flip(&mut self, _vec: &Self::V, success: bool) {
         self.data *= 1 - 2 * (success as i32)
     }
-    fn norm(&self) -> f64 {
-        (self.data as f64).abs()
+    fn norm(&self) -> f32 {
+        (self.data as f32).abs()
     }
     fn random_vec() -> Self::V {
         0
@@ -38,7 +52,38 @@ impl Spin for Ising {
     }
 }
 
+impl Spin for XY {
+    type V = (f32, f32);
+    fn dot(&mut self, vec: &Self::V) -> f32 {
+        self.x * vec.0 + self.y * vec.1
+    }
+    fn flip(&mut self, vec: &Self::V, success: bool) {
+        let dot = (vec.0 * self.x + vec.1 * self.y) * (success as i32 as f32);
+        self.x -= 2. * dot * vec.0;
+        self.y -= 2. * dot * vec.1;
+        let norm = 1./(self.x*self.x + self.y*self.y).sqrt();
+        self.x *= norm;
+        self.y *= norm;
+    }
+    fn norm(&self) -> f32 {
+        (self.x * self.x + self.y * self.y).sqrt()
+    }
+    fn random_vec() -> Self::V {
+        let x = 0.1 * thread_rng().sample::<f32,_>(StandardNormal);
+        let y = 0.1 * thread_rng().sample::<f32,_>(StandardNormal);
+        let norm = 1./(x*x + y*y).sqrt();
+        (x * norm, y * norm)
+    }
+    fn start() -> Self {
+        let (x, y) = Self::random_vec();
+        Self { x, y }
+    }
+    fn zero() -> Self {
+        Self { x: 0., y: 0. }
+    }
+}
 
+#[derive(Debug)]
 pub struct SmallVec<T> {
     data: [Option<T>; MAX_NEIGHBORS]
 }
@@ -90,11 +135,18 @@ impl<T: Copy> SmallVec<T> {
 }
 
 pub trait Spin: for <'a> AddAssign<&'a Self> + Sized + Debug {
+    /// Type of the seed vector used to flip
     type V;
+    /// Flip the spin value
     fn flip(&mut self, vec: &Self::V, success: bool);
-    fn dot(&mut self, vec: &Self::V) -> f64;
+    /// Dot two spin values against the other
+    fn dot(&mut self, vec: &Self::V) -> f32;
+    /// Generate a random seed vector to flip
     fn random_vec() -> Self::V;
+    /// Get a zero-valued spin for the sake of averaging
     fn zero() -> Self;
+    /// Generate a random spin value to start
     fn start() -> Self;
-    fn norm(&self) -> f64;
+    /// Get the norm for the sake of averaging
+    fn norm(&self) -> f32;
 }

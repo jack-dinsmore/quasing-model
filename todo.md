@@ -1,3 +1,3 @@
-## May 25
+* Maybe redo the analysis but without the search? Just do one big run with like 100 points
 
-Wrote all the simulation code. The next step is to write code to load the einstein tiling and penrose tiling and run some sims.
+* Figure out some extra CMT stuff to do. Quantum version? Bosonic approximation? Hofstadter butterfly?

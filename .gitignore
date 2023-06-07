@@ -1,1 +1,7 @@
 /target
+/data
+*.npy
+*.aux
+*.log
+*.out
+*.synctex.gz
