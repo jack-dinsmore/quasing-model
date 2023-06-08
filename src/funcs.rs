@@ -40,9 +40,12 @@ pub fn load_penrose(level: usize) -> (usize, impl Fn(usize) ->SmallVec<(usize, f
     std::fs::File::open(format!("data/penrose-{}.npy", level)).unwrap()
         .read_to_end(&mut buf).unwrap();
     let bond_indices = NpyData::<i64>::from_bytes(&buf).unwrap().to_vec();
-
+    let mut max_bond_index = 0;
+    for i in &bond_indices {
+        max_bond_index = max_bond_index.max(*i);
+    }
     (
-        bond_indices.len() as usize / 2,
+        max_bond_index as usize + 1,
         move |site: usize| {
             let mut neighbors = SmallVec::new();
             for pair in bond_indices.chunks(2) {

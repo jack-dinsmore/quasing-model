@@ -4,7 +4,7 @@ use crate::spin::{Spin, SmallVec};
 use rand::random;
 
 const CLUSTER_QUEUE_MAX_SIZE: usize = 256_000;
-const BURN_IN: usize = 256;
+const BURN_IN: usize = 128;
 const RUNS_PER_TRIAL: usize = 16;
 
 /// Result from a complete run of a lattice
@@ -27,7 +27,7 @@ pub struct Lattice<S: Spin> {
 }
 
 impl<S: Spin> Lattice<S> {
-    pub fn new(num_sites: usize, neighbor_func: impl Fn(usize) -> SmallVec<(usize, f32)>) -> Self {
+    pub fn new(num_sites: usize, neighbor_func: &impl Fn(usize) -> SmallVec<(usize, f32)>) -> Self {
         let mut data = Vec::with_capacity(num_sites);
         let mut neighbors = Vec::with_capacity(num_sites);
         for site_index in 0..num_sites {
