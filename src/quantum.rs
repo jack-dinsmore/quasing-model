@@ -8,7 +8,7 @@ const CLUSTER_STACK_MAX_SIZE: usize = 256_000;
 const BURN_IN: usize = 4;
 const RUNS_PER_TRIAL: usize = 8;
 const SPIN_BC: bool = true;
-const EPSILON : f32 = 1e-10;
+const EPSILON : f32 = 1e-5;
 
 pub struct QLattice {
     length_three: f32,
@@ -152,21 +152,17 @@ impl QLattice {
                 };
 
                 // 3. Flip spins in this column
-                let mut lr = -random::<f32>().ln() * beta;
-                let mut ll = -random::<f32>().ln() * beta;
+                let mut lr = -random::<f32>().ln();
+                let mut ll = -random::<f32>().ln();
 
-                if stack_pointer > 0 {
-                    for (site, height) in &self.cluster_stack[0..((stack_pointer - 1) as usize)] {
-                        // Do not allow the flipping of points in the queue
-                        if *site != my_index { continue; }
-                        if *height > my_height && *height < my_height + lr {
-                            lr = height - my_height - EPSILON;
-                            println!("Shortened A");
-                        }
-                        if *height < my_height && *height > my_height - ll {
-                            ll = my_height - height - EPSILON;
-                            println!("Shortened B");
-                        }
+                for (site, height) in &self.cluster_stack[0..stack_pointer as usize] {
+                    // Do not allow the flipping of points in the queue
+                    if *site != my_index { continue; }
+                    if *height > my_height && *height < my_height + lr {
+                        lr = height - my_height - EPSILON;
+                    }
+                    if *height < my_height && *height > my_height - ll {
+                        ll = my_height - height - EPSILON;
                     }
                 }
 
@@ -197,24 +193,19 @@ impl QLattice {
                     }
                 }
                 // assert_eq!(verify_sorted(my_column), true);
-                let cr = dl.min(dr);
+                let cr = dr.min(lr);
                 let cl = dl.min(ll);
 
-                println!("{} {} {} {} {} {}", cr + cl, ll, lr, dl, dr, my_height);
-
-                // println!("{} {:?}", my_height, my_column);
-                
                 // 4. Make bridges
                 for (neighbor, strength) in self.neighbors[my_index].iter_mut() {
                     if marked_sites[*neighbor] { continue; }
                     let neighbor_column = &self.data[*neighbor];
                     let mut cluster_done_so_far = 0.;
                     loop {
-                        let lx = -random::<f32>().ln() / (2. * strength);
+                        let lx = -random::<f32>().ln() / (2. * strength * beta);
                         cluster_done_so_far += lx;
                         let neighbor_height = my_height - cl + cluster_done_so_far;
                         if cluster_done_so_far > cl + cr { break; }
-                        println!("Generation");
 
                         // Get the spin of the neighbor at this point
                         let mut neighbor_spin = SPIN_BC;
@@ -226,8 +217,6 @@ impl QLattice {
                         }
                         if neighbor_spin != my_spin { continue; }
 
-                        println!("Correct spin");
-
                         if new_stack_pointer + 1 >= CLUSTER_STACK_MAX_SIZE as i32 {
                             break;
                         }
@@ -237,14 +226,12 @@ impl QLattice {
                         marked_sites[*neighbor] = true;
                         new_stack_pointer += 1;
                     }
-                    println!("New neighbor");
                 }
                 if new_stack_pointer + 1 >= CLUSTER_STACK_MAX_SIZE as i32 {
                     println!("Stack exceeded");
                     break;
                 }
                 stack_pointer = new_stack_pointer;
-                panic!();
             }
         }
     }

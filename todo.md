@@ -1,1 +1,1 @@
-* Figure out more TIM stuff. I'm doing an in-depth debugging rn and it's kinda working.
+* After running this, which is betas in both terms, try the queued program of what's in the paper.

@@ -65,6 +65,9 @@ impl Spin for Ising {
     fn zero() -> Self {
         Self { data: 0 }
     }
+    fn name() -> String {
+        "ising".to_owned()
+    }
 }
 
 impl Spin for XY {
@@ -95,6 +98,9 @@ impl Spin for XY {
     }
     fn zero() -> Self {
         Self { x: 0., y: 0. }
+    }
+    fn name() -> String {
+        "xy".to_owned()
     }
 }
 
@@ -129,6 +135,9 @@ impl Spin for Heisenberg {
     }
     fn zero() -> Self {
         Self { x: 0., y: 0., z: 0. }
+    }
+    fn name() -> String {
+        "heisenberg".to_owned()
     }
 }
 
@@ -198,4 +207,6 @@ pub trait Spin: for <'a> AddAssign<&'a Self> + Sized + Debug {
     fn start() -> Self;
     /// Get the norm for the sake of averaging
     fn norm(&self) -> f32;
+    /// Get the name of this spin model
+    fn name() -> String;
 }

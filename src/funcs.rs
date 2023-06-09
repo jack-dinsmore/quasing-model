@@ -22,14 +22,14 @@ pub fn rect_fn(row_size: usize, t2: f32) -> impl Fn(usize) -> SmallVec<(usize, f
             neighbors.push((site + 1 - row_size, 1.))
         }
         if site / row_size != 0 {
-            neighbors.push((site - row_size, t2))
+            neighbors.push((site - row_size, 1./(t2 * t2)))
         } else {
-            neighbors.push((row_size * (row_size-1) + site, t2))
+            neighbors.push((row_size * (row_size-1) + site, 1./(t2 * t2)))
         }
         if site / row_size != row_size - 1 {
-            neighbors.push((site + row_size, t2))
+            neighbors.push((site + row_size, 1./(t2 * t2)))
         } else {
-            neighbors.push((site - row_size * (site / row_size), t2))
+            neighbors.push((site - row_size * (site / row_size), 1./(t2 * t2)))
         }
         neighbors
     }
@@ -96,10 +96,10 @@ pub fn load_einstein(name: &str, t2: f32) -> (usize, impl Fn(usize) ->SmallVec<(
             }
             for pair in medium_indices.chunks(2) {
                 if pair[0] as usize == site {
-                    neighbors.push((pair[1] as usize, t2));
+                    neighbors.push((pair[1] as usize, 1./(t2*t2)));
                 }
                 if pair[1] as usize == site {
-                    neighbors.push((pair[0] as usize, t2));
+                    neighbors.push((pair[0] as usize, 1./(t2*t2)));
                 }
             }
             for pair in large_indices.chunks(2) {
