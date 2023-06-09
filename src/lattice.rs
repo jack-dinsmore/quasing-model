@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::spin::{Spin, SmallVec};
 use rand::random;
 
-const CLUSTER_QUEUE_MAX_SIZE: usize = 256_000;
+const CLUSTER_STACK_MAX_SIZE: usize = 256_000;
 const BURN_IN: usize = 128;
 const RUNS_PER_TRIAL: usize = 16;
 
@@ -23,10 +23,11 @@ impl Display for Report {
 pub struct Lattice<S: Spin> {
     data: Vec<S>,
     neighbors: Vec<SmallVec<(usize, f32)>>,
-    cluster_queue: [usize; CLUSTER_QUEUE_MAX_SIZE],
+    cluster_stack: [usize; CLUSTER_STACK_MAX_SIZE],
 }
 
 impl<S: Spin> Lattice<S> {
+    /// Create a new lattice from a function that generates neighbors.
     pub fn new(num_sites: usize, neighbor_func: &impl Fn(usize) -> SmallVec<(usize, f32)>) -> Self {
         let mut data = Vec::with_capacity(num_sites);
         let mut neighbors = Vec::with_capacity(num_sites);
@@ -38,16 +39,18 @@ impl<S: Spin> Lattice<S> {
         Self {
             data,
             neighbors,
-            cluster_queue: [0; CLUSTER_QUEUE_MAX_SIZE],
+            cluster_stack: [0; CLUSTER_STACK_MAX_SIZE],
         }
     }
 
+    /// Zero out the data set
     pub fn zero(&mut self) {
         for item in self.data.iter_mut() {
             *item = S::start();
         }
     }
 
+    /// Run cluster flips and computes the average magnetization and susceptibility every `RUNS_PER_TRIAL` iterations. Returns these as the data set after `n_trials` flips have elapsed, or until `checkpoint.0` flips have elapsed AND magnetization is over `checkpoint.1`. The checkpoint is a runtime-improvement feature. To turn it off, set `checkpoint.1` greater than 1.
     pub fn run(&mut self, beta: f32, n_trials: usize, checkpoint: (usize, f32)) -> Report {
         let mut num_avgs = n_trials - BURN_IN;
 
@@ -76,6 +79,7 @@ impl<S: Spin> Lattice<S> {
         }
     }
 
+    /// Flips exactly one cluster. This code has been optimized to make it branchless. 
     fn evolve(&mut self, beta: f32, count: usize) -> f32 {
         let mut cluster_size = 0;
         for _ in 0..count {
@@ -85,23 +89,22 @@ impl<S: Spin> Lattice<S> {
 
             // 2. Mark, and flip.
             let mut stack_pointer: i32 = 0;
-            self.cluster_queue[0] = start_index;
+            self.cluster_stack[0] = start_index;
             self.data[start_index].flip(&vec, true);
             let mut marked_sites = vec![false; self.data.len()];
 
             while stack_pointer >= 0 {
                 // 3. Iterate through neighbors and flip
-                let my_index = self.cluster_queue[stack_pointer as usize];
+                let my_index = self.cluster_stack[stack_pointer as usize];
                 let mut new_stack_pointer = stack_pointer - 1;
                 for (neighbor, strength) in self.neighbors[my_index].iter_mut() {
-                    // if marked_sites[*neighbor] { continue; }
                     let prob = 1. - (0.0f32.min(2. * beta * strength
                         * self.data[my_index].dot(&vec)
                         * self.data[*neighbor].dot(&vec))
                     ).exp();
                     
                     let success = !marked_sites[*neighbor] && (random::<f32>() < prob);
-                    self.cluster_queue[new_stack_pointer as usize + 1] = *neighbor;
+                    self.cluster_stack[(new_stack_pointer + 1) as usize] = *neighbor;
                     self.data[*neighbor].flip(&vec, success);
                     new_stack_pointer += success as i32;
                     marked_sites[*neighbor] = marked_sites[*neighbor] || success;
@@ -113,6 +116,7 @@ impl<S: Spin> Lattice<S> {
         cluster_size as f32 / count as f32 / self.data.len() as f32
     }
 
+    /// Computes the magnetization of the crystal
     pub fn magnetization(&self) -> f32 {
         let mut tot = S::zero();
         for item in &self.data {

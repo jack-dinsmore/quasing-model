@@ -1,4 +1,4 @@
-\documentclass[amsmath,amssymb,aps,twocolumn]{revtex4-2}
+\documentclass[amsmath,amssymb,aps,twocolumn,nofootinbib]{revtex4-2}
 
 \usepackage{bm}
 \usepackage{graphicx}
@@ -38,14 +38,14 @@ Now that the susceptibility has been defined, we will set $h$ to zero and study 
 
 The reason why a phase transition occurs is as follows. The Hamiltonian displays $s_i\rightarrow -s_i$ symmetry when when $h=0$. If the thermodynamic system explores all of phase space, then the average thermodynamic state should possess the same symmetries of the Hamiltonian so that $M=0$. However, for low temperature we also expect the system to attain the lowest possible energy. This state consists of all spins up (or all spins down) has $M = 1$ (or $-1$), which violates the expectation of no magnetization. The resolution to this apparent contradiction that there exists a critical temperature $T_c$ below which energetic considerations dominate and the crystal is magnetic ($|M|>0$), and above which the symmetry of phase space dominates and the crystal is not magnetic ($M = 0$).
 
-The phenomenon of critical temperature has been generalized to other theories. In particular, if the system's variables are arranged as a members of a field $s(\bm x)$, then the free energy automatically comes in a form that allows phase transitions using a method known as Landau field theory. Taking the Ising model as an example, we could approximate the $s_i$ spins defined on discrete points $x_i$ as a field $s(\bm x)$ defined for any position $\bm x$. The original Hamiltonian contained translational, rotational, and $s\rightarrow-s$ symmetry, and therefore the free energy should as well. Expanding it in powers of $s(\bm x)$ guarantees the form
+The phenomenon of critical temperature has been generalized to other theories. In particular, if the system's variables are arranged as a members of a field $s(\bm x)$, then the free energy may be approximated as an integral over functions of $s(\bm x)$. This approximation is called Landau Field Theory and it yields a form which is readily able to create phase transitions. Taking the Ising model as an example, we could approximate the $s_i$ spins defined on discrete points $x_i$ as the field $s(\bm x)$ defined for any position $\bm x$. The original Hamiltonian contained translational, rotational, and $s\rightarrow-s$ symmetry, and therefore the free energy should as well. Expanding it in powers of $s(\bm x)$ guarantees the form
 \begin{equation}
 F \propto -\int d^d x \, \parens{(\nabla s(\bm x))^2 + A s(\bm x)^2 + B s(\bm x)^4 + \dots}
 \label{eqn:landau}
 \end{equation}
 where $d$ is the number of dimensions of the lattice and $A$ and $B$ are arbitrary constants. If $A>0$, then free energy is minimized at every point by setting $s(\bm x)$. However, if $A<0$, then minimizing the free energy necessitates setting $s(\bm x)$ to some nonzero value, thereby magnetizing the crystal and creating a phase transition. In principle, all the parameters of the model including $A$ may depend on temperature. All that is necessary to describe a phase transition is therefore to write a form of $A$ which allows it to cross from positive to negative at a critical temperature $T_c$.
 
-The utility of this field theory approximation is in its generality. The Ising model and all models like it are Landau field theories and are therefore described by the sameEq.~\ref{eqn:landau}. Therefore, all Ising models have the same near-critical-point behavior regardless of the lattice on which they are defined. An Ising model's only unique properties are their values of $A$ and $B$; i.e., the value of the critical temperature.
+The utility of this field theory approximation is in its generality. All Ising-like models like it are Landau field theories and are all described by Eq~\ref{eqn:landau}, meaning they have the same near-critical-point behavior. This statement is independent of the lattice or interaction strengths; it depends only on the field $\bm s$ and the dimensionality of the lattice. A particular lattice's only unique properties its its values of $A$ and $B$; i.e., the value of its critical temperature.
 
 In addition to the Ising model, we study the XY model which consists of promoting $s_i$ to a two-dimensional unit vector defined at every lattice point. The interaction term in the Hamiltonian becomes $\bm s_i \cdot \bm s_j$. This XY model has different $T_c$ than the Ising model and can even contain vortices, which are topologically protected quasiparticles where the curl of $\bm s_i$ is nonzero. A third spin model is the Transverse Ising Model (TIM), which consists of replacing $s_i$ in Eq.~\ref{eqn:ising} with the Pauli matrices $\bm \sigma_i$ and $\bm \sigma_j$ and interpreting the result as a quantum Hamiltonian. Past research \jtd{citation needed} has shown that the $d$-dimensional TIM is equivalent to a classical Ising model in $d+1$ dimensions in the limit of a very strong interaction strength in the extra dimension. Thus, critical temperatures for all three of these models can be found using the same techniques.
 
@@ -90,12 +90,14 @@ A third and final extension is necessary to the Wolff algorithm in order to hand
 
 \section{Results}
 
+We implemented the Wolff algorithm with a custom code base \footnote{\jtd{LINK}} and executed for a variety of spin models and crystals. Except when stated otherwise, we used a finite-size lattice with initial conditions of random spins. Magnetization $M$ and susceptibility $\chi$ measurements were collected every 16 cluster flips to prevent autocorrelation. 10,000 $M$ and $\chi$ measurements were made when $M$ was small, and when $M$ was large we made 1,000 measurements because the algorithm was found to be more stable for $T< T_c$.
+
 The upper left panel of Figure \ref{fig:square} shows the magnetization $M$ and susceptibility $\chi$ of the Ising, XY, and TI models executed on a square lattice as a function of the lattice width $L = \sqrt{N}$. The critical temperature of the Ising model on this lattice is known to be $T_c = \frac{2}{\ln (1 + \sqrt{2})} \approx 2.27$ in units where $k_B = J = 1$ due to the Onsager solution, and indeed the magnetization falls sharpest near this location. For the XY model, the critical temperature is approximately $0.8816$, which is likewise close to the drop in $M$. The location of these transitions is not perfect, and $M$ it is not strictly zero for $T<T_c$ due to finite-size effects. Larger lattice sizes lead to smaller $M$ for $T<T_c$. In the XY model the critical temperature is substantially lower due to the increased degrees of freedom of the spin system. Furthermore, $M$ approaches its low-temperature limit of 1 linearly for low temperature rather than exponentially, which is a qualitative difference between the Ising and XY models.
 
 \begin{figure*}
   \centering
   \includegraphics[width=0.49\linewidth]{../figs/square.png}\hfill
-  \includegraphics[width=0.49\linewidth]{../figs/square.png}
+  \includegraphics[width=0.49\linewidth]{../figs/penrose.png}
   \caption{Magnetization and susceptibility as a function of $T_c$ under the XY and Ising models. \textit{Left}: A square lattice with $N=128^2=16,384$ sites. \textit{Right}: A Penrose lattice with $N=21,316$ sites.}
   \label{fig:square}
 \end{figure*}

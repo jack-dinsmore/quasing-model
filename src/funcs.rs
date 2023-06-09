@@ -19,7 +19,7 @@ pub fn rect_fn(row_size: usize, t2: f32) -> impl Fn(usize) -> SmallVec<(usize, f
         if site % row_size != row_size - 1 {
             neighbors.push((site + 1, 1.))
         } else {
-            neighbors.push((site - row_size + 1, 1.))
+            neighbors.push((site + 1 - row_size, 1.))
         }
         if site / row_size != 0 {
             neighbors.push((site - row_size, t2))

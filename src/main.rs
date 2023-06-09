@@ -1,16 +1,18 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 mod lattice;
+mod quantum;
 mod spin;
 mod funcs;
 use core::num;
 use std::{fs::File, io::Write, thread, sync::Arc};
 
 use lattice::Lattice;
+use quantum::QLattice;
 use spin::{Ising, Spin};
 use funcs::{square_fn, load_penrose, load_einstein, rect_fn};
 
-use crate::spin::XY;
+use crate::spin::{XY, Heisenberg};
 
 const NUM_THREADS: usize = 8;
 
@@ -83,6 +85,24 @@ fn one_pass<S: Spin>(lattice: &mut Lattice<S>, start_temp: f32, end_temp: f32,
     }
 }
 
+fn qone_pass(lattice: &mut QLattice, start_temp: f32, end_temp: f32,
+    n_trials: usize, num_betas: usize) -> Data {
+
+    let mut susceptibilities = Vec::new();
+    let mut magnetizations = Vec::new();
+    let betas = reciprocal_linspace(start_temp, end_temp, num_betas);
+    for beta in &betas {
+        println!("Temp {}", 1./beta);
+        lattice.zero();
+        let result = lattice.run(*beta, n_trials, (n_trials / 10, 0.5));
+        magnetizations.push(result.magnetization);
+        susceptibilities.push(result.susceptibility);
+    }
+    Data {
+        betas, magnetizations, susceptibilities
+    }
+}
+
 fn search<S: Spin>(lattice: &mut Lattice<S>, bottom: f32, top: f32,
     layers: usize, n_trials: usize, count_per_iteration: usize) -> Data {
 
@@ -133,18 +153,31 @@ fn main() {
     // ising_rect();
     // println!("Ising einstein");
     // ising_einstein();
+    // println!("heisenberg rect");
+    // heisenberg_rect();
+    // println!("heisenberg einstein");
+    // heisenberg_einstein();
 }
 
 fn one() {
-    let (size, func) = (128*128, square_fn(128));
+    let (size, func) = (12*12, square_fn(12));
     println!("{} sites", size);
-    let mut lattice = Lattice::<Ising>::new(size, &func);
-    let data = one_pass(&mut lattice, 0.01, 4., 1000, 50);
-    data.save("ising-square");
+    let mut lattice = QLattice::new(size, &func);
+    let data = qone_pass(&mut lattice, 0.01, 0.01, 1000, 1);
+    // let data = qone_pass(&mut lattice, 0.01, 2., 10000, 10);
+    data.save("tim-square");
 
-    let mut lattice = Lattice::<XY>::new(size, &func);
-    let data = one_pass(&mut lattice, 0.01, 4., 1000, 50);
-    data.save("xy-square");
+    // let mut lattice = Lattice::<Ising>::new(size, &func);
+    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    // data.save("ising-square");
+
+    // let mut lattice = Lattice::<XY>::new(size, &func);
+    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    // data.save("xy-square");
+
+    // let mut lattice = Lattice::<Heisenberg>::new(size, &func);
+    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    // data.save("heisenberg-square");
 
     // let (size, func) = load_penrose(9);
     // println!("{} sites", size);
@@ -155,6 +188,10 @@ fn one() {
     // let mut lattice = Lattice::<XY>::new(size, &func);
     // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
     // data.save("xy-penrose");
+
+    // let mut lattice = Lattice::<Heisenberg>::new(size, &func);
+    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    // data.save("heisenberg-penrose");
 }
 
 fn ising_rect() {
@@ -175,7 +212,7 @@ fn ising_rect() {
                 println!("{}", t2);
                 let func = rect_fn(size, t2);
                 let mut lattice = Lattice::<Ising>::new(size*size, &func);
-                let data = one_pass(&mut lattice, 0.01, 3., 1000, 50);
+                let data = one_pass(&mut lattice, 0.01, 3., 10000, 50);
                 data.save(&format!("rect-ising-{:.8}", t2));
             }
         }));
@@ -204,8 +241,37 @@ fn xy_rect() {
                 println!("{}", t2);
                 let func = rect_fn(size, t2);
                 let mut lattice = Lattice::<XY>::new(size*size, &func);
-                let data = one_pass(&mut lattice, 0.01, 1.3, 3000, 50);
+                let data = one_pass(&mut lattice, 0.01, 1.3, 10000, 50);
                 data.save(&format!("rect-xy-{:.8}", t2));
+            }
+        }));
+    }
+    
+    for thread in threads {
+        thread.join().unwrap();
+    }
+}
+
+fn heisenberg_rect() {
+    let num_per_thread = 5;
+    let size = 128;
+    let mut threads = Vec::new();
+    let t2s = linspace(0.01,1.,NUM_THREADS * num_per_thread);
+
+    for thread_index in 0..NUM_THREADS {
+        let mut t2_chunk = Vec::new();
+        for t2_index in 0..num_per_thread {
+            let i = num_per_thread * thread_index + t2_index;
+            t2_chunk.push(t2s[i]);
+        }
+
+        threads.push(thread::spawn(move || {
+            for t2 in t2_chunk {
+                println!("{}", t2);
+                let func = rect_fn(size, t2);
+                let mut lattice = Lattice::<Heisenberg>::new(size*size, &func);
+                let data = one_pass(&mut lattice, 0.01, 0.9, 10000, 50);
+                data.save(&format!("rect-heisenberg-{:.8}", t2));
             }
         }));
     }
@@ -232,7 +298,7 @@ fn ising_einstein() {
                 println!("{}", t2);
                 let (size, func) = load_einstein("7k", t2);
                 let mut lattice = Lattice::<Ising>::new(size, &func);
-                let data = one_pass(&mut lattice, 0.01, 1.5, 1000, 50);
+                let data = one_pass(&mut lattice, 0.01, 1.5, 10000, 50);
                 data.save(&format!("einstein-ising-{:.8}", t2));
             }
         }));
@@ -260,8 +326,36 @@ fn xy_einstein() {
                 println!("{}", t2);
                 let (size, func) = load_einstein("7k", t2);
                 let mut lattice = Lattice::<XY>::new(size, &func);
-                let data = one_pass(&mut lattice, 0.01, 0.8, 3000, 50);
+                let data = one_pass(&mut lattice, 0.01, 0.8, 10000, 50);
                 data.save(&format!("einstein-xy-{:.8}", t2));
+            }
+        }));
+    }
+    
+    for thread in threads {
+        thread.join().unwrap();
+    }
+}
+
+fn heisenberg_einstein() {
+    let num_per_thread = 5;
+    let mut threads = Vec::new();
+    let t2s = linspace(0.01,2.,NUM_THREADS * num_per_thread);
+
+    for thread_index in 0..NUM_THREADS {
+        let mut t2_chunk = Vec::new();
+        for t2_index in 0..num_per_thread {
+            let i = num_per_thread * thread_index + t2_index;
+            t2_chunk.push(t2s[i]);
+        }
+
+        threads.push(thread::spawn(move || {
+            for t2 in t2_chunk {
+                println!("{}", t2);
+                let (size, func) = load_einstein("7k", t2);
+                let mut lattice = Lattice::<Heisenberg>::new(size, &func);
+                let data = one_pass(&mut lattice, 0.01, 0.4, 10000, 50);
+                data.save(&format!("einstein-heisenberg-{:.8}", t2));
             }
         }));
     }

@@ -1,3 +1,1 @@
-* Maybe redo the analysis but without the search? Just do one big run with like 100 points
-
-* Figure out some extra CMT stuff to do. Quantum version? Bosonic approximation? Hofstadter butterfly?
+* Figure out more TIM stuff. I'm doing an in-depth debugging rn and it's kinda working.

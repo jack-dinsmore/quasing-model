@@ -17,6 +17,13 @@ pub struct XY {
     y: f32,
 }
 
+#[derive(Debug)]
+pub struct Heisenberg {
+    x: f32,
+    y: f32,
+    z: f32,
+}
+
 impl<'a> AddAssign<&'a Self> for Ising {
     fn add_assign(&mut self, rhs: &'a Self) {
         self.data += rhs.data;
@@ -27,6 +34,14 @@ impl<'a> AddAssign<&'a Self> for XY {
     fn add_assign(&mut self, rhs: &'a Self) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+impl<'a> AddAssign<&'a Self> for Heisenberg {
+    fn add_assign(&mut self, rhs: &'a Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
     }
 }
 
@@ -80,6 +95,40 @@ impl Spin for XY {
     }
     fn zero() -> Self {
         Self { x: 0., y: 0. }
+    }
+}
+
+impl Spin for Heisenberg {
+    type V = (f32, f32, f32);
+    fn dot(&mut self, vec: &Self::V) -> f32 {
+        self.x * vec.0 + self.y * vec.1 + self.z * vec.2
+    }
+    fn flip(&mut self, vec: &Self::V, success: bool) {
+        let dot = (vec.0 * self.x + vec.1 * self.y + vec.2 * self.z) * (success as i32 as f32);
+        self.x -= 2. * dot * vec.0;
+        self.y -= 2. * dot * vec.1;
+        self.z -= 2. * dot * vec.2;
+        let norm = 1./(self.x*self.x + self.y*self.y + self.z*self.z).sqrt();
+        self.x *= norm;
+        self.y *= norm;
+        self.z *= norm;
+    }
+    fn norm(&self) -> f32 {
+        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+    fn random_vec() -> Self::V {
+        let x = 0.1 * thread_rng().sample::<f32,_>(StandardNormal);
+        let y = 0.1 * thread_rng().sample::<f32,_>(StandardNormal);
+        let z = 0.1 * thread_rng().sample::<f32,_>(StandardNormal);
+        let norm = 1./(x*x + y*y + z*z).sqrt();
+        (x * norm, y * norm, z * norm)
+    }
+    fn start() -> Self {
+        let (x, y, z) = Self::random_vec();
+        Self { x, y, z }
+    }
+    fn zero() -> Self {
+        Self { x: 0., y: 0., z: 0. }
     }
 }
 
