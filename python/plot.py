@@ -4,7 +4,7 @@ from util import load, get_stats_steep
 plt.style.use("root")
 
 def display_crystal(ising_name, xy_name, heisenberg_name, save_name):
-    fig, (ax_mag, ax_sus) = plt.subplots(figsize=(6, 7), nrows=2, sharex=True)
+    fig, (ax_mag, ax_sus) = plt.subplots(figsize=(9, 11), nrows=2, sharex=True)
     lines = [
         (f"{ising_name}.dat", "maroon", "mediumblue", "o"),
         (f"{xy_name}.dat", "crimson", "dodgerblue", "^"),
@@ -22,7 +22,7 @@ def display_crystal(ising_name, xy_name, heisenberg_name, save_name):
         ax_mag.scatter(1/betas, mag, facecolor=blue, marker=marker)
         ax_sus.plot(1/betas, sus, color=red, zorder=-1)
         ax_sus.scatter(1/betas, sus, facecolor=red, marker=marker)
-    ax_sus.set_xlabel("Critical temperature $T_c$")
+    ax_sus.set_xlabel("Temperature $T$")
     ax_mag.set_ylabel("Magnetization $M$")
     ax_sus.set_ylabel("Susceptibility $\chi$")
     ax_sus.set_ylim(1e-1,None)
@@ -30,8 +30,8 @@ def display_crystal(ising_name, xy_name, heisenberg_name, save_name):
     ax_sus.set_yscale('log')
     ax_sus.set_xlim(1/betas[-1], 1/betas[0])
     for t_crit, (_,_,_,marker) in zip(t_crits, lines):
-        ax_mag.scatter([t_crit], ax_mag.get_ylim()[1], s=48,facecolor="lightgray", clip_on=False, zorder=10, marker=marker)
-        ax_sus.scatter([t_crit], ax_sus.get_ylim()[0], s=48,facecolor="lightgray", clip_on=False, zorder=10, marker=marker)
+        ax_mag.scatter([t_crit], ax_mag.get_ylim()[1], s=96,facecolor="lightgray", clip_on=False, zorder=10, marker=marker)
+        ax_sus.scatter([t_crit], ax_sus.get_ylim()[0], s=96,facecolor="lightgray", clip_on=False, zorder=10, marker=marker)
     ax_sus.plot([],[],color='k', marker='o', markerfacecolor='lightgray',label="Ising model")
     ax_sus.plot([],[],color='k', marker='^', markerfacecolor='lightgray',label="XY model")
     ax_sus.plot([],[],color='k', marker='d', markerfacecolor='lightgray',label="Heisenberg model")

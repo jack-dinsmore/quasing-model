@@ -75,7 +75,7 @@ impl<S: Spin> Lattice<S> {
         let sus = (avg_mag2 - avg_mag*avg_mag) * self.data.len() as f32;
         Report {
             magnetization: avg_mag,
-            susceptibility: sus,
+            susceptibility: sus * beta,
         }
     }
 

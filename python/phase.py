@@ -6,19 +6,13 @@ from util import load, get_stats_steep
 WINDOW = (0.25, 0.55)
 plt.style.use("root")
 
-def post_process(load_result, eta):
-    betas, mag, sus = load_result
-    t2 = np.tan((eta + 1.) / 4. * np.pi)
-    t1 = 1 / t2
-    return (betas / t1, mag, sus)
-
 def get_phase(start_name):
     etas = []
     temp_criticals = []
     for f in os.listdir("../data/output/"):
         if f.startswith(start_name):
             eta = float(f[len(start_name):-4])
-            betas, mag, sus = post_process(load(f), eta)
+            betas, mag, sus = load(f)
             temp = get_stats_steep(betas, mag)
             etas.append(eta)
             temp_criticals.append(temp)
@@ -50,16 +44,17 @@ betas, mag, sus = load("heisenberg-penrose.dat")
 print("Penrose Heisenberg", get_stats_steep(betas, mag))
 
 
-fig, ax = plt.subplots(figsize=(6, 4))
+fig, ax = plt.subplots()
 plot(ax, "rect-ising", "Ising", "gold", "o")
 plot(ax, "rect-xy", "XY", "orange", "^")
 plot(ax, "rect-heisenberg", "Heisenberg", "darkgoldenrod", "d")
+ax.set_ylim(0,4)
 fig.legend(ncol=3, loc="upper center", bbox_to_anchor=(0.5, 1.06))
 fig.tight_layout()
 fig.savefig(f"../figs/rect-phase.png")
 fig.savefig(f"../figs/rect-phase.pdf")
 
-fig, ax = plt.subplots(figsize=(6, 4))
+fig, ax = plt.subplots()
 plot(ax, "einstein-ising", "Ising", "gold", "o")
 plot(ax, "einstein-xy", "XY", "orange", "^")
 plot(ax, "einstein-heisenberg", "Heisenberg", "darkgoldenrod", "d")

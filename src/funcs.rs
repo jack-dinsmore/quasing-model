@@ -5,21 +5,21 @@ use npy::NpyData;
 use crate::spin::SmallVec;
 
 pub fn square_fn(row_size: usize) -> impl Fn(usize) -> SmallVec<(usize, f32)> {
-    rect_fn(row_size, 1.)
+    rect_fn(row_size, 1., 1.)
 }
 
-pub fn rect_fn(row_size: usize, t2: f32) -> impl Fn(usize) -> SmallVec<(usize, f32)> {
+pub fn rect_fn(row_size: usize, t1: f32, t2: f32) -> impl Fn(usize) -> SmallVec<(usize, f32)> {
     move |site: usize| {
         let mut neighbors = SmallVec::new();
         if site % row_size != 0 {
-            neighbors.push((site - 1, 1.))
+            neighbors.push((site - 1, 1./(t1*t1)))
         } else {
-            neighbors.push((site + row_size - 1, 1.))
+            neighbors.push((site + row_size - 1, 1./(t1*t1)))
         }
         if site % row_size != row_size - 1 {
-            neighbors.push((site + 1, 1.))
+            neighbors.push((site + 1, 1./(t1*t1)))
         } else {
-            neighbors.push((site + 1 - row_size, 1.))
+            neighbors.push((site + 1 - row_size, 1./(t1*t1)))
         }
         if site / row_size != 0 {
             neighbors.push((site - row_size, 1./(t2 * t2)))
@@ -61,7 +61,7 @@ pub fn load_penrose(level: usize) -> (usize, impl Fn(usize) ->SmallVec<(usize, f
     )
 }
 
-pub fn load_einstein(name: &str, t2: f32) -> (usize, impl Fn(usize) ->SmallVec<(usize, f32)>) {
+pub fn load_einstein(name: &str, t1: f32, t2: f32) -> (usize, impl Fn(usize) ->SmallVec<(usize, f32)>) {
     let mut small_buf = vec![];
     let mut med_buf = vec![];
     let mut long_buf = vec![];
@@ -88,10 +88,10 @@ pub fn load_einstein(name: &str, t2: f32) -> (usize, impl Fn(usize) ->SmallVec<(
             let mut neighbors = SmallVec::new();
             for pair in small_indices.chunks(2) {
                 if pair[0] as usize == site {
-                    neighbors.push((pair[1] as usize, 1.0));
+                    neighbors.push((pair[1] as usize, 1.0/(t1*t1)));
                 }
                 if pair[1] as usize == site {
-                    neighbors.push((pair[0] as usize, 1.0));
+                    neighbors.push((pair[0] as usize, 1.0/(t1*t1)));
                 }
             }
             for pair in medium_indices.chunks(2) {
@@ -104,10 +104,10 @@ pub fn load_einstein(name: &str, t2: f32) -> (usize, impl Fn(usize) ->SmallVec<(
             }
             for pair in large_indices.chunks(2) {
                 if pair[0] as usize == site {
-                    neighbors.push((pair[1] as usize, 0.25));
+                    neighbors.push((pair[1] as usize, 0.25/(t1*t1)));
                 }
                 if pair[1] as usize == site {
-                    neighbors.push((pair[0] as usize, 0.25));
+                    neighbors.push((pair[0] as usize, 0.25/(t1*t1)));
                 }
             }
             neighbors

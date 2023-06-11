@@ -91,7 +91,7 @@ impl QLattice {
         }
         Report {
             magnetization: avg_mag,
-            susceptibility: sus,
+            susceptibility: sus * beta,
         }
     }
 

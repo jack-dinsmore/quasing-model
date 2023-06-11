@@ -2,10 +2,11 @@
 
 \usepackage{bm}
 \usepackage{graphicx}
+\usepackage{braket}
 \usepackage[colorlinks=true]{hyperref}
 
-\newcommand{\braket}[1]{\left \langle #1 \right \rangle}
 \newcommand{\parens}[1]{\left ( #1 \right )}
+\newcommand{\brackets}[1]{\left [ #1 \right ]}
 \newcommand{\jtd}[1]{{\color{red}\textbf{JTD: #1}}}
 
 \begin{document}
@@ -22,7 +23,7 @@
 \section{Introduction}
 The Ising model was one of the first statistical mechanics models to contain a phase transition, and remains one of the only exactly solvable examples. It consists of defining a variable $s_i = \pm 1$ at every site of a lattice with $N$ sites as a classical approximation of the up-or-down spin of a fermion. On further analogy with fermionic spins, it asserts that the spins interact by defining the classical Hamiltonian
 \begin{equation}
-  H = -J \sum_{\braket{ij}} s_i s_j + h \sum_i s_i
+  H = -J \sum_{\braket{ij}} s_i s_j - h \sum_i s_i
   \label{eqn:ising}
 \end{equation}
 where $h$ is an applied magnetic field. This model's phase transition is most visible in the magnetization, defined as
@@ -64,13 +65,13 @@ In this final project, we use numerical methods to compute the phase diagram $T_
 
 In addition to the Ising model Hamiltonian (Eq.~\ref{eqn:ising}), we study the XY model which consists of promoting $s_i$ to a two-dimensional unit vector defined at every lattice point. The interaction term in the Hamiltonian becomes $\bm s_i \cdot \bm s_j$. This XY model has different $T_c$ than the Ising model and can even contain vortices, which are topologically protected quasi-particles where the curl of $\bm s_i$ is nonzero. A third spin model is the Heisenberg model, which is similar to the XY model except that $s_i$ is promoted to a three-dimensional unit vector. Unlike the XY model, the Heisenberg model may not display a true phase transition in the thermodynamic limit \cite{tomita2014finite}. Nevertheless, it has phase-transition-like behavior in that $M$ experiences a large drop in a small temperature range. The Ising, XY, and Heisenberg models have progressively more degrees of freedom, and their critical temperatures are therefore progressively lower.
 
-A fourth spin model is the Transverse Ising Model (TIM), which consists of replacing $s_i$ in Eq.~\ref{eqn:ising} with the Pauli matrices $\bm \sigma_i$ and $\bm \sigma_j$ and interpreting the result as a quantum Hamiltonian. A simple proof using the path integral approach (appendix \ref{app:tim-equivalence}) shows that the $d$-dimensional TIM is equivalent to a classical Ising model in $d+1$ dimensions in the limit of a very strong interaction strength in the extra dimension. Thus, critical temperatures for all four of these models can be found using the same techniques.
+A fourth spin model is the Transverse Ising Model (TIM), which consists of replacing $s_i$ in Eq.~\ref{eqn:ising} with the Pauli matrices $\bm \sigma_i$ and $\bm \sigma_j$ and interpreting the result as a quantum Hamiltonian. A simple proof using the path integral approach (section \ref{sec:tim}) shows that the $d$-dimensional TIM is equivalent to a classical Ising model in $d+1$ dimensions in the limit of a very strong interaction strength in the extra dimension. Thus, critical temperatures for all four of these models can be found using the same techniques.
 
-Beyond the magnetization $M$, another interesting property of a spin model is its susceptibility $\chi = \frac{dM}{dh}$. Even in a model which sets $h=0$, $\chi$ an be defined as follows by the fluctuation-dissipation theorem (appendix \ref{app:fluctuation-dissipation}):
+Beyond the magnetization $M$, another interesting property of a spin model is its susceptibility $\chi = \frac{dM}{dh}$. Even in a model which sets $h=0$, $\chi$ can be achieved by explicitly differentiating Eq.~\ref{eqn:magnetization}, including the $e^{-\beta H}$ weight in the average. This differentiation results in the zero-$h$ limit of
 \begin{equation}
   \chi = \frac{\partial M}{\partial h} = \frac{1}{N}\braket{\sum_i(s_i - M)^2}.
 \end{equation}
-The susceptibility diverges at the critical temperature and otherwise falls off to zero.
+This is a special case of the fluctuation-dissipation theorem, which states that a driving field $h$ causes fluctuations in the driven variable $M$ which are proportional to the susceptibility $\chi$. A spin model is most susceptible to magnetic field near $T_c$, because the presence of a magnetic field changes the value of $T_c$ and therefore can greatly change the magnetization of a system near $T_c$. In particular, the susceptibility diverges at the critical temperature and otherwise falls off to zero.
 
 
 \section{Cluster Monte Carlo Methods: the Wolff Algorithm}
@@ -105,7 +106,7 @@ A third and final extension is necessary to the Wolff algorithm in order to hand
 \section{Phase Diagrams}
 \label{sec:results}
 
-We implemented the Wolff algorithm with a custom code base \footnote{\jtd{LINK}} and executed for a variety of spin models and crystals. Except when stated otherwise, we used a finite-size lattice with initial conditions of random spins. Magnetization $M$ and susceptibility $\chi$ measurements were collected every 16 cluster flips to prevent autocorrelation. 10,000 $M$ and $\chi$ measurements were made when $M$ was small, and when $M$ was large we made 1,000 measurements because the algorithm was found to be more stable for $T< T_c$.
+We implemented the Wolff algorithm with a custom code base \footnote{\url{https://github.com/jack-dinsmore/quasing-model}} and executed for a variety of spin models and crystals. Except when stated otherwise, we used a finite-size lattice with initial conditions of random spins. Magnetization $M$ and susceptibility $\chi$ measurements were collected every 16 cluster flips to prevent autocorrelation. 10,000 $M$ and $\chi$ measurements were made when $M$ was small, and when $M$ was large we made 1,000 measurements because the algorithm was found to be more stable for $T< T_c$.
 
 The upper left panel of Figure \ref{fig:square} shows the magnetization $M$ and susceptibility $\chi$ of the Ising, XY, and Heisenberg models executed on a square lattice as a function of the lattice width $L = \sqrt{N}$. The magnetization drops rapidly near $T_c$, shown as vertical dotted lines. The location of these transitions is not perfect, and $M$ it is not strictly zero for $T<T_c$ due to finite-size effects. Larger lattice sizes lead to smaller $M$ for $T<T_c$. The XY and Heisenberg models have substantially lower $T_c$ due to the increased degrees of freedom of the spin system. Furthermore, $M$ approaches its low-temperature limit of 1 linearly for the Heisenberg and XY models, while the approach is exponential for the Ising model. This is a qualitative difference between the Ising and XY models.
 
@@ -119,7 +120,7 @@ The upper left panel of Figure \ref{fig:square} shows the magnetization $M$ and 
 
 The susceptibility in the bottom left panel produces a maximum at $T_c$, decaying to zero more rapidly on the low-temperature side than high-temperature. For an infinite lattice, the peak will be likewise infinite, but it is blunted by finite $N$. The peak in susceptibility can be used as a measure of the location of $T_c$, as can the point of maximum slope of $M$.
 
-In both crystals and both models, the point of maximum susceptibility and maximum $dM/dT$ occur at approximately the same location. For the sake of approximating the critical temperature, we take the $T$ point at which the steepest line tangent to the $M(T)$ curve intersects the $M=1$ axis. The critical temperatures obtained from this approximation are shown in table \ref{tab:tc}. These temperatures are very close to the true values known for the square lattice: For the Ising model, the Onsager solution gives $T_c = \frac{2}{\ln(1 + \sqrt{2})} \approx 2.2691$, and for the XY model MCMC methods give $T_c \approx 0.8816$. The Heisenberg model does not have a true phase transition, but this fact is difficult to verify in a lattice of finite size, which cannot display true phase transitions until $N\rightarrow \infty$. 
+In both crystals and both models, the point of maximum susceptibility and maximum $dM/dT$ occur at approximately the same location. For the sake of approximating the critical temperature, we take the $T$ point at which the steepest line tangent to the $M(T)$ curve intersects $M=0.5$. The critical temperatures obtained from this approximation are shown in table \ref{tab:tc}. These temperatures are very close to the true values known for the square lattice: For the Ising model, the Onsager solution gives $T_c = \frac{2}{\ln(1 + \sqrt{2})} \approx 2.2691$ in units where $J=k_B=1$, and for the XY model MCMC methods give $T_c \approx 0.8816$. The Heisenberg model does not have a true phase transition, but this fact is difficult to verify in a lattice of finite size, which cannot display true phase transitions until $N\rightarrow \infty$. 
 \begin{table}
   \centering
   \begin{tabular}{c|cc}
@@ -129,7 +130,7 @@ In both crystals and both models, the point of maximum susceptibility and maximu
     XY & 0.928 & 0.943\\
     Heisenberg & 0.493 & 0.462\\ \hline \hline
   \end{tabular}
-  \caption{Critical temperatures for the Ising, XY, and Heisenberg models defined on the square and Penrose lattices. These values are very close to the true values (see text).}
+  \caption{Critical temperatures for the Ising, XY, and Heisenberg models defined on the square and Penrose lattices in units where $J = k_B = 1$. These values are very close to the true values (see text).}
   \label{tab:tc}
 \end{table}
 
@@ -139,35 +140,88 @@ The square lattice can be stretched into a rectangular lattice by allowing the h
 
 Let us define the anisotropy $\eta$ of the lattice as 
 \begin{equation}
-  \frac{a}{b} = \frac{2}{\pi}\tan^{-1}\eta,\qquad \eta = \tan\frac{\pi a}{2b}.
+  \frac{a}{b} = \tan\parens{\pi\frac{\eta + 1}4},\qquad \eta = \frac{4}{\pi}\tan^{-1}\parens{\frac{a}{b}}-1.
+  \label{eqn:anisotropy}
 \end{equation}
 We fix the product of the lengths $ab=1$. Then $\eta \in (-1,1)$ and $\eta=0$ implies $a=b$. For the square lattice in particular, rotational symmetry guarantees that the phase diagram $T_c(\eta)$ is symmetric under $a\leftrightarrow b$, or $\eta \rightarrow -\eta$.
 
-Figure \ref{fig:rect} shows the critical temperature as a function of $\eta$ under the Ising, XY, and Heisenberg models. As expected, the result is symmetric around $\eta \rightarrow -\eta$.
+Figure \ref{fig:rect-phase} shows the critical temperature as a function of $\eta$ under the Ising, XY, and Heisenberg models. As expected, the result is symmetric around $\eta \rightarrow -\eta$.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{../figs/rect-phase.pdf}
-  \caption{The phase diagram of the rectangular lattice as a function of the anisotropy $\eta$, where $\eta = 0$ is the square lattice and $\eta\rightarrow \pm 1$ is the anisotropic limit.}
-  \label{fig:rect}
+  \caption{The phase diagram of the rectangular lattice as a function of the anisotropy $\eta$, where $\eta = 0$ is the square lattice and $\eta\rightarrow \pm 1$ is the anisotropic limit. This function is even due to the rotational symmetry of a rectangular lattice.}
+  \label{fig:rect-phase}
 \end{figure}
 
-A similar procedure shows the phase diagram for the einstein tiling, where $a$ and $b$ are now the two lengths shown in figure \ref{fig:einstein}.
+A similar procedure shows the phase diagram for the einstein tiling, where $a$ and $b$ are now the two lengths shown in figure \ref{fig:einstein}. The phase diagram is shown in figure \ref{fig:einstein-phase}.
+
+\jtd{Discussion}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{../figs/einstein-phase.pdf}
+  \caption{The phase diagram of the einstein tiling as a function of the anisotropy $\eta$. The einstein lattice depicted in figure \ref{fig:einstein} had $\eta = 1/\sqrt{3}\approx 0.577$.}
+  \label{fig:einstein-phase}
+\end{figure}
 
 \section{Transverse Ising Model}
 \label{sec:tim}
 
+Quantum mechanical models such as the TIM cannot in general be represented by the same formalism as a classical model. However the the TIM is a special case: A $d$-dimensional TIM is equivalent to a $d+1$-dimensional Ising model. We will prove this in the case of $d=1$. To see this, consider the quantum partition function
+\begin{equation}
+  Z = \mathrm{Tr}\parens{e^{-\tau H}}.
+  \label{eqn:quantum-partition}
+\end{equation}
+For clarity, the Hamiltonian for the TIM is defined as  
+\begin{equation}
+  H = -J \sum_{\braket{ij}}\bm \sigma_i \cdot \bm \sigma_j - h \sum_i\sigma_i^3
+\end{equation}
+where $\bm \sigma_i$ is the spin operator (a vector of Pauli matrices) for site $i$. Since $H$ is time-independent and therefore self-commuting, this is 
+\begin{equation}
+  \begin{split}
+    Z =& \mathrm{Tr}\parens{e^{-\epsilon H}\dots e^{-\epsilon H}}\\
+     =& \sum_{\psi_0\in\mathcal{H}}\bra{\psi_0}e^{-\epsilon H}\parens{\sum_{\psi_1\in\mathcal{H}}\ket{\psi_1}\bra{\psi_1}}\times\dots\\
+     &\times e^{-i\epsilon H}\parens{\sum_{\psi_n\in\mathcal{H}}\ket{\psi_n}\bra{\psi_n}}\ket{\psi_0}
+  \end{split}
+\end{equation}
+where $\ket{\psi_a}$ indicates a quantum state in the Hilbert space $\mathcal{H}$. In the second line we just inserted the identity many times as well as the definition of the trace. The number $n$ is set such that $\epsilon n = \beta$ to satisfy Eq.~\ref{eqn:quantum-partition}. Setting $\epsilon$ sufficiently low, we can expand the exponential to first order in $\epsilon$:
+\begin{equation}
+  \begin{split}
+    Z =& \sum_{\{\psi\}}\bra{\psi_0}(1 - \epsilon H)\ket{\psi_1}\bra{\psi_1}\times\dots\\
+    &\times (1 - \epsilon H)\ket{\psi_n}\braket{\psi_n|\psi_0}.
+  \end{split}
+  \label{eqn:partition-simplified}
+\end{equation}
+where we have collapsed all the sums into one. In an orthonormal basis where $\braket{\psi_a|\psi_b} = \delta_{ab}$, the only $\mathcal{O}(\epsilon^0)$ term in Eq.~\ref{eqn:partition-simplified} is for all $\ket{\psi_a}$ equal. So to order $\mathcal{O}(\epsilon)$,
+\begin{equation}
+  \begin{split}
+    Z &= 1 - \epsilon\sum_{a\neq b}\braket{\psi_a|H|\psi_b}\\
+    Z &= 1 - \epsilon\sum_{a\neq b}\Braket{\psi_a|-J\sum_{\braket{ij}}\bm \sigma_i \cdot \bm \sigma_j - h\sum_i\sigma_i^3|\psi_b}
+  \end{split}
+\end{equation}
+As our basis, we may take the wavefunctions $\ket{s_1 s_2 \dots s_N}$ where $s_i$ indicates the sign of the spin of site $i$ and there are $N$ sites. Explicit calculation verifies that $\braket{s_is_j|\bm \sigma_i \cdot \bm \sigma_j|s_i's_j'}=\delta_{s_i,s_j}\delta_{s'_i,s'_j}$. We sum over the $s'$ spins and replace the $s$ Kronecker delta with $s_i s_j$, which is equal to $\delta_{s_i,s_j}$ shifting by a constant. Likewise, $\braket{s|\sigma^3|s'}=\delta_{s,s'}\sim ss'$. Expressing $\ket{\psi_a}=\ket{s_1 s_2 \dots s_N}$ and $\ket{\psi_b}=\ket{s'_1 s'_2 \dots s'_N}$, we get
+\begin{equation}
+  Z = 1 - \epsilon\sum_{\{s\},\{s'\}} \brackets{-J\sum_{\braket{ij}}\bm s_is_j - h\sum_is_i s'_i}.
+\end{equation}
+Since this expression is order $\epsilon$, we may write it as an exponential:
+\begin{equation}
+  \begin{split}
+    Z &= \sum_{\{s\},\{s'\}} e^{-K}.\\
+    K &= -\epsilon J\sum_{\braket{ij}}\bm s_is_j +\frac{1}{2}\ln(\epsilon h)\sum_is_i s'_i.
+  \end{split}
+\end{equation}
+
+If we stack the $s$ and $s'$ spins into a square grid, then this is the classical partition function of a square Ising model, with different vertical and horizontal interaction strengths. The anisotropy is very high: $\eta \sim 1 - C\sqrt{\epsilon}$ for a constant $C$ under the definition of Eq.~\ref{eqn:anisotropy}.
+
+
+\jtd{Discussion}
+
+
 \section{Conclusion}
 \label{sec:conclusion}
 
-\appendix
-
-\section{The Fluctuation-Dissipation Theorem and Magnetic Susceptibility}
-\label{app:fluctuation-dissipation}
-
-
-\section{Equivalence Between the Transverse Ising Model and Classical Ising Model}
-\label{app:tim-equivalence}
+\jtd{Conclusion}
 
 \bibliography{cmt.bib}
 

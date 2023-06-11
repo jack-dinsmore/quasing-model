@@ -54,8 +54,12 @@ fn reciprocal_linspace(start: f32, end: f32, count: usize) -> Vec<f32> {
     linspace(end, start, count).into_iter().map(|f|{1./f}).collect::<Vec<_>>()
 }
 
+fn get_t1_from_eta(eta: f32) -> f32 {
+    ((-eta + 1.) / 4. * std::f32::consts::PI).tan().powi(2)
+}
+
 fn get_t2_from_eta(eta: f32) -> f32 {
-    ((eta + 1.) / 4. * std::f32::consts::PI).tan()
+    ((eta + 1.) / 4. * std::f32::consts::PI).tan().powi(2)
 }
 
 fn linspace_ex(start: f32, end: f32, count: usize) -> Vec<f32> {
@@ -147,7 +151,7 @@ fn search<S: Spin>(lattice: &mut Lattice<S>, bottom: f32, top: f32,
 
 fn main() {
     // one();
-    // rect::<Ising>(3.);
+    rect::<Ising>(3.);
     einstein::<Ising>(0.8);
     rect::<XY>(1.3);
     einstein::<XY>(1.5);
@@ -156,12 +160,12 @@ fn main() {
 }
 
 fn one() {
-    let (size, func) = (12*12, square_fn(12));
-    println!("{} sites", size);
-    let mut lattice = QLattice::new(size, &func);
-    // let data = qone_pass(&mut lattice, 0.01, 0.01, 1000, 1);
-    let data = qone_pass(&mut lattice, 0.1, 2., 1000, 10);
-    data.save("tim-square");
+    // let (size, func) = (12*12, square_fn(12));
+    // println!("{} sites", size);
+    // let mut lattice = QLattice::new(size, &func);
+    // // let data = qone_pass(&mut lattice, 0.01, 0.01, 1000, 1);
+    // let data = qone_pass(&mut lattice, 0.1, 2., 1000, 10);
+    // data.save("tim-square");
     
     // let (size, func) = (128*128, square_fn(128));
     // println!("{} sites", size);
@@ -177,19 +181,19 @@ fn one() {
     // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
     // data.save("heisenberg-square");
 
-    // let (size, func) = load_penrose(9);
-    // println!("{} sites", size);
-    // let mut lattice = Lattice::<Ising>::new(size, &func);
-    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
-    // data.save("ising-penrose");
+    let (size, func) = load_penrose(9);
+    println!("{} sites", size);
+    let mut lattice = Lattice::<Ising>::new(size, &func);
+    let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    data.save("ising-penrose");
 
-    // let mut lattice = Lattice::<XY>::new(size, &func);
-    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
-    // data.save("xy-penrose");
+    let mut lattice = Lattice::<XY>::new(size, &func);
+    let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    data.save("xy-penrose");
 
-    // let mut lattice = Lattice::<Heisenberg>::new(size, &func);
-    // let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
-    // data.save("heisenberg-penrose");
+    let mut lattice = Lattice::<Heisenberg>::new(size, &func);
+    let data = one_pass(&mut lattice, 0.01, 4., 10000, 50);
+    data.save("heisenberg-penrose");
 }
 
 fn rect<S: Spin>(tmax: f32) {
@@ -209,7 +213,7 @@ fn rect<S: Spin>(tmax: f32) {
         threads.push(thread::spawn(move || {
             for eta in eta_chunk {
                 println!("{}", eta);
-                let func = rect_fn(size, get_t2_from_eta(eta));
+                let func = rect_fn(size, get_t1_from_eta(eta), get_t2_from_eta(eta));
                 let mut lattice = Lattice::<S>::new(size*size, &func);
                 let data = one_pass(&mut lattice, 0.01, tmax, 10000, 50);
                 data.save(&format!("rect-{}-{:.8}", S::name(), eta));
@@ -238,7 +242,7 @@ fn einstein<S: Spin>(tmax: f32) {
         threads.push(thread::spawn(move || {
             for eta in eta_chunk {
                 println!("{}", eta);
-                let (size, func) = load_einstein("7k", get_t2_from_eta(eta));
+                let (size, func) = load_einstein("7k", get_t1_from_eta(eta), get_t2_from_eta(eta));
                 let mut lattice = Lattice::<S>::new(size, &func);
                 let data = one_pass(&mut lattice, 0.01, tmax, 10000, 50);
                 data.save(&format!("einstein-{}-{:.8}", S::name(), eta));
