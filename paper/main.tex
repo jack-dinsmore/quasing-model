@@ -1,8 +1,16 @@
-\documentclass[amsmath,amssymb,aps,twocolumn,nofootinbib]{revtex4-2}
+\documentclass[
+  amsmath,
+  amssymb,
+  aps,
+  twocolumn,
+  nofootinbib,
+  floatfix,
+]{revtex4-2}
 
 \usepackage{bm}
 \usepackage{graphicx}
 \usepackage{braket}
+\usepackage{xcolor}
 \usepackage[colorlinks=true]{hyperref}
 
 \newcommand{\parens}[1]{\left ( #1 \right )}
@@ -28,7 +36,7 @@ The Ising model was one of the first statistical mechanics models to contain a p
 \end{equation}
 where $h$ is an applied magnetic field. This model's phase transition is most visible in the magnetization, defined as
 \begin{equation}
-  M = \frac{1}{N}\braket{\sum_{i} s_i}
+  M = \frac{1}{N}\Braket{\sum_{i} s_i}
   \label{eqn:magnetization}
 \end{equation}
 where the brackets indicate an average over the statistical ensemble of states, weighted by the Boltzmann factor $e^{-\beta H}$.
@@ -53,7 +61,7 @@ Recently, the first \textit{single} tile which fills the plane aperiodically has
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{../figs/einstein.pdf}
-  \caption{The einstein tiling}
+  \caption{The einstein tiling with $b/a=\sqrt{3}$. Any other fraction $b/a$ gives a different einstein tiling}
   \label{fig:einstein}
 \end{figure}
 
@@ -69,7 +77,7 @@ A fourth spin model is the Transverse Ising Model (TIM), which consists of repla
 
 Beyond the magnetization $M$, another interesting property of a spin model is its susceptibility $\chi = \frac{dM}{dh}$. Even in a model which sets $h=0$, $\chi$ can be achieved by explicitly differentiating Eq.~\ref{eqn:magnetization}, including the $e^{-\beta H}$ weight in the average. This differentiation results in the zero-$h$ limit of
 \begin{equation}
-  \chi = \frac{\partial M}{\partial h} = \frac{1}{N}\braket{\sum_i(s_i - M)^2}.
+  \chi = \frac{\partial M}{\partial h} = \frac{1}{N}\Braket{\sum_i(s_i - M)^2}.
 \end{equation}
 This is a special case of the fluctuation-dissipation theorem, which states that a driving field $h$ causes fluctuations in the driven variable $M$ which are proportional to the susceptibility $\chi$. A spin model is most susceptible to magnetic field near $T_c$, because the presence of a magnetic field changes the value of $T_c$ and therefore can greatly change the magnetization of a system near $T_c$. In particular, the susceptibility diverges at the critical temperature and otherwise falls off to zero.
 
@@ -140,35 +148,40 @@ The square lattice can be stretched into a rectangular lattice by allowing the h
 
 Let us define the anisotropy $\eta$ of the lattice as 
 \begin{equation}
-  \frac{a}{b} = \tan\parens{\pi\frac{\eta + 1}4},\qquad \eta = \frac{4}{\pi}\tan^{-1}\parens{\frac{a}{b}}-1.
+  \frac{a}{b} = \tan\brackets{\frac{\pi}{4}\parens{1+\eta}},\qquad \eta = \frac{4}{\pi}\tan^{-1}\parens{\frac{a}{b}}-1.
   \label{eqn:anisotropy}
 \end{equation}
-We fix the product of the lengths $ab=1$. Then $\eta \in (-1,1)$ and $\eta=0$ implies $a=b$. For the square lattice in particular, rotational symmetry guarantees that the phase diagram $T_c(\eta)$ is symmetric under $a\leftrightarrow b$, or $\eta \rightarrow -\eta$.
+We fix the product of the lengths $ab=1$, so that 
+\begin{equation}
+  a^2 = \tan\brackets{\frac{\pi}{4}\parens{1+\eta}},\qquad b^2 = \tan\brackets{\frac{\pi}{4}\parens{1-\eta}}
+\end{equation}
 
-Figure \ref{fig:rect-phase} shows the critical temperature as a function of $\eta$ under the Ising, XY, and Heisenberg models. As expected, the result is symmetric around $\eta \rightarrow -\eta$.
+. Then $\eta \in (-1,1)$ and $\eta=0$ implies $a=b$. For the square lattice in particular, rotational symmetry guarantees that the phase diagram $T_c(\eta)$ is symmetric under $a\leftrightarrow b$, or $\eta \rightarrow -\eta$.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{../figs/rect-phase.pdf}
-  \caption{The phase diagram of the rectangular lattice as a function of the anisotropy $\eta$, where $\eta = 0$ is the square lattice and $\eta\rightarrow \pm 1$ is the anisotropic limit. This function is even due to the rotational symmetry of a rectangular lattice.}
+  \caption{The phase diagram of the rectangular lattice as a function of the anisotropy $\eta$, where $\eta = 0$ is the square lattice. The Ising and XY model $T_c$ peak at $\eta \approx 1/3$ and $1/4$ respectively, while the Heisenberg model $T_c$ is constant until $\eta \approx 1/6$. This function is even due to the rotational symmetry of a rectangular lattice.}
   \label{fig:rect-phase}
 \end{figure}
 
-A similar procedure shows the phase diagram for the einstein tiling, where $a$ and $b$ are now the two lengths shown in figure \ref{fig:einstein}. The phase diagram is shown in figure \ref{fig:einstein-phase}.
+Figure \ref{fig:rect-phase} shows the critical temperature as a function of $\eta$ under the Ising, XY, and Heisenberg models. As expected, the result is symmetric around $\eta \rightarrow -\eta$. Anisotropy appears to increase the critical temperature near $\eta = 0$ in the Ising and XY models, though this trend must turn over at some $\eta$ to achieve a $T_c\rightarrow 0$ value in the limit as $\eta \rightarrow \pm 1$. For the Ising model, the turnover occurs at $\eta=\pm\frac{1}{3}$. For the XY model, it occurs at $\eta = \pm \frac{1}{3}$. For the Heisenberg model, $T_c$ is constant to within a fraction of a percent until $\eta \approx 0.15$ when $T_c$ begins to decrease. All of these turnover values of $\eta$ may depend on the length $L$ of the lattice. In the $N\rightarrow \infty$ limit, a series expansion approach may help to reveal why certain values of $\eta$ change the behavior of $T_c$.
 
-\jtd{Discussion}
+A similar procedure shows the phase diagram for the einstein tiling, where $a$ and $b$ are now the two lengths shown in figure \ref{fig:einstein}. The phase diagram is shown in figure \ref{fig:einstein-phase}. In this case, anisotropy decreases the critical temperature in every model so that the maximum anisotropy occurs at $\eta = 0$, which corresponds to a regular lattice. The critical temperature falls so quickly that $\eta = -1/3$, which is the value of $\eta$ depicted in figure \ref{fig:einstein}, already has $T_c \approx 0$. This is due to the relatively low coordination number of each site in the einstein tiling; many sites are connected to the minimum two bonds whereas the Penrose and square model had average coordination number of 4 in the $N\rightarrow \infty$ limit. Since more connected lattices have stronger spin interactions, this is qualitatively similar to fixing $J$. Dimensional analysis requires that the critical value of any crystal is proportional to $\beta_c J = J/T_c$ so that increasing $J$ implies increasing $T_c$.
+
+Surprisingly, $T_c(\eta)$ possesses approximate $\eta\rightarrow -\eta$ symmetry, even though $\eta$ and $-\eta$ represent different tilings. This suggests the presence of some greater symmetry in the einstein tiling which has not yet been remarked. Other models defined on the einstein tiling do not contain this symmetry. The Ising and Heisenberg display slight deviations from $\eta\rightarrow -\eta$ symmetry; it is possible that the symmetry only appears in the XY case.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{../figs/einstein-phase.pdf}
-  \caption{The phase diagram of the einstein tiling as a function of the anisotropy $\eta$. The einstein lattice depicted in figure \ref{fig:einstein} had $\eta = 1/\sqrt{3}\approx 0.577$.}
+  \caption{The phase diagram of the einstein tiling as a function of the anisotropy $\eta$. An unexpected $\eta \rightarrow -\eta$ symmetry has appeared. The einstein lattice depicted in figure \ref{fig:einstein} had $\eta = -1/3$.}
   \label{fig:einstein-phase}
 \end{figure}
 
 \section{Transverse Ising Model}
 \label{sec:tim}
 
-Quantum mechanical models such as the TIM cannot in general be represented by the same formalism as a classical model. However the the TIM is a special case: A $d$-dimensional TIM is equivalent to a $d+1$-dimensional Ising model. We will prove this in the case of $d=1$. To see this, consider the quantum partition function
+Quantum mechanical models such as the TIM cannot in general be represented by the same formalism as a classical model. However the the TIM is a special case: A $d$-dimensional TIM is equivalent to a $d+1$-dimensional Ising model, as first discovered in Ref.~\cite{schultz64two}. We will prove this in the case of $d=1$. To see this, consider the quantum partition function
 \begin{equation}
   Z = \mathrm{Tr}\parens{e^{-\tau H}}.
   \label{eqn:quantum-partition}
@@ -214,14 +227,17 @@ Since this expression is order $\epsilon$, we may write it as an exponential:
 
 If we stack the $s$ and $s'$ spins into a square grid, then this is the classical partition function of a square Ising model, with different vertical and horizontal interaction strengths. The anisotropy is very high: $\eta \sim 1 - C\sqrt{\epsilon}$ for a constant $C$ under the definition of Eq.~\ref{eqn:anisotropy}.
 
-
-\jtd{Discussion}
-
+We have already computed the behavior of the two-dimensional classical Ising model; according to figure \ref{fig:rect-phase}, $T_c\rightarrow 0$ as $\eta \rightarrow 1$, so that the critical temperature of the TIM is zero. This is a qualitative difference between the TIM and the classical Ising model; in the classial model, the only one of the two minima of the free energy must be occupied, forcing the system to choose either $M=+1$ or $M=-1$. In the quantum model both can be simultaneously occupied, with zero-energy fermion-like domain walls separating the two. Thus, the ordered phase has magnetization $M=0$ which cannot occur in the classical case.
 
 \section{Conclusion}
 \label{sec:conclusion}
+After an introduction to phase transitions in classical spin-like models, first in the case of the Ising model and then in the general case of a Landau field theory, we solve the Ising, XY, and Heisenberg models on a rectangular (regular) lattice and the einstein (aperiodic) tiling. As our method, we used the Wolff algorithm with moderate resolution and a modest number of iterations. Our results are therefore accurate only to a few figures of precision.
 
-\jtd{Conclusion}
+The magnetization and susceptibility as a function of temperature were discussed and shown to be dramatically different between the models, though similar for different crystals. This was explained as a consequence of the Landau field theory explanation for phase transitions, which predicts that the behavior of a theory is sensitive to the number of degrees of freedom of the spin field and less to the structure of the lattice.
+
+Phase diagrams of the critical temperature as a function of the anisotropy of the lattice structure were then shown; these are not predicted by Landau field theory and therefore are much more dependent on the lattice structure.  Anisotropy was seen to increase the critical temperature of the square lattice, but decrease the critical temperature of the einstein tiling. The square lattice showed model-dependent turnover values of anisotropy where $T_c$ was stationary. The einstein tiling displayed approximate $\eta \rightarrow -\eta$ symmetry despite the fact that $\eta$ and $-\eta$ represent different lattices, indicative of a deeper self-symmetry to the lattice.
+
+Finally, we introduced a quantum model --- the Transverse Ising model (TIM) --- and showed that the one-dimensional TIM it is equivalent to the two-dimensional classical Ising model in the anisotropic limit. Our calculations had revealed a critical temperature of zero for this limit, indicating that the TIM is not magnetized at zero temperature. We explained that this is because the quantum nature of the TIM allows it to simultaneously occupy both the spin-up and spin-down minima of the free energy in the low-temperature limit. Thus, the thermodynamic state is ordered, full of fermionic domain walls which leave an overall magnetization of zero.
 
 \bibliography{cmt.bib}
 

@@ -16,7 +16,7 @@ def load(filename):
     
 def get_stats_steep(betas, mag):
     max_slope = None
-    max_slope_beta = None
+    max_slope_temp = None
     max_slope_mag= None
     temps = 1/betas
     if len(mag) <= 1: return np.nan, 1

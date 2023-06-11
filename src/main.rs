@@ -55,11 +55,11 @@ fn reciprocal_linspace(start: f32, end: f32, count: usize) -> Vec<f32> {
 }
 
 fn get_t1_from_eta(eta: f32) -> f32 {
-    ((-eta + 1.) / 4. * std::f32::consts::PI).tan().powi(2)
+    ((-eta + 1.) / 4. * std::f32::consts::PI).tan()
 }
 
 fn get_t2_from_eta(eta: f32) -> f32 {
-    ((eta + 1.) / 4. * std::f32::consts::PI).tan().powi(2)
+    ((eta + 1.) / 4. * std::f32::consts::PI).tan()
 }
 
 fn linspace_ex(start: f32, end: f32, count: usize) -> Vec<f32> {
@@ -151,7 +151,7 @@ fn search<S: Spin>(lattice: &mut Lattice<S>, bottom: f32, top: f32,
 
 fn main() {
     // one();
-    rect::<Ising>(3.);
+    rect::<Ising>(6.);
     einstein::<Ising>(0.8);
     rect::<XY>(1.3);
     einstein::<XY>(1.5);

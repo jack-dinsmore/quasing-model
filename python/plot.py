@@ -15,6 +15,7 @@ def display_crystal(ising_name, xy_name, heisenberg_name, save_name):
         if filename[:4] == "None": continue
         betas, mag, sus = load(filename)
         t_crit = get_stats_steep(betas, mag)
+        print(filename, t_crit)
         t_crits.append(t_crit)
         ax_sus.axvline(t_crit, linestyle="dotted", linewidth=1, color='k', zorder=-2)
         ax_mag.axvline(t_crit, linestyle="dotted", linewidth=1, color='k', zorder=-2)
@@ -32,14 +33,15 @@ def display_crystal(ising_name, xy_name, heisenberg_name, save_name):
     for t_crit, (_,_,_,marker) in zip(t_crits, lines):
         ax_mag.scatter([t_crit], ax_mag.get_ylim()[1], s=96,facecolor="lightgray", clip_on=False, zorder=10, marker=marker)
         ax_sus.scatter([t_crit], ax_sus.get_ylim()[0], s=96,facecolor="lightgray", clip_on=False, zorder=10, marker=marker)
-    ax_sus.plot([],[],color='k', marker='o', markerfacecolor='lightgray',label="Ising model")
-    ax_sus.plot([],[],color='k', marker='^', markerfacecolor='lightgray',label="XY model")
-    ax_sus.plot([],[],color='k', marker='d', markerfacecolor='lightgray',label="Heisenberg model")
+    ax_sus.plot([],[],color='k', marker='o', markerfacecolor='lightgray',label="Ising")
+    ax_sus.plot([],[],color='k', marker='^', markerfacecolor='lightgray',label="XY")
+    ax_sus.plot([],[],color='k', marker='d', markerfacecolor='lightgray',label="Heisenberg")
     fig.legend(ncol=3, loc="upper center", bbox_to_anchor=(0.5, 0.95))
     plt.subplots_adjust(hspace=0.05)
     fig.savefig(f"../figs/{save_name}.png", bbox_inches="tight")
     fig.savefig(f"../figs/{save_name}.pdf", bbox_inches="tight")
 
-display_crystal("tim-square", None, None, "test")
+display_crystal("tim-square", None, None, "tim")
+display_crystal("rect-ising-0.33000004", None, None, "test")
 display_crystal("ising-square", "xy-square", "heisenberg-square", "square")
 display_crystal("ising-penrose", "xy-penrose", "heisenberg-square", "penrose")
