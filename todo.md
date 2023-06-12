@@ -1,1 +1,0 @@
-* After running this, which is betas in both terms, try the queued program of what's in the paper.
