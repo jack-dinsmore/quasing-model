@@ -4,6 +4,7 @@
   aps,
   twocolumn,
   nofootinbib,
+  nolongbibliography,
   floatfix,
 ]{revtex4-2}
 
@@ -11,7 +12,7 @@
 \usepackage{graphicx}
 \usepackage{braket}
 \usepackage{xcolor}
-\usepackage[colorlinks=true]{hyperref}
+\usepackage[colorlinks=true,allcolors=magenta]{hyperref}
 
 \newcommand{\parens}[1]{\left ( #1 \right )}
 \newcommand{\brackets}[1]{\left [ #1 \right ]}
@@ -29,34 +30,34 @@
 \maketitle
 
 \section{Introduction}
-The Ising model was one of the first statistical mechanics models to contain a phase transition, and remains one of the only exactly solvable examples. It consists of defining a variable $s_i = \pm 1$ at every site of a lattice with $N$ sites as a classical approximation of the up-or-down spin of a fermion. On further analogy with fermionic spins, it asserts that the spins interact by defining the classical Hamiltonian
+The Ising model was one of the first statistical mechanics models to contain a phase transition, and remains one of the only exactly solvable examples. It consists of defining a variable $s_i = \pm 1$ at every site of a lattice as a classical approximation of the up-or-down spin of a fermion. On further analogy with fermionic spins, it allows neighboring spins to interact under the classical Hamiltonian
 \begin{equation}
   H = -J \sum_{\braket{ij}} s_i s_j - h \sum_i s_i
   \label{eqn:ising}
 \end{equation}
-where $h$ is an applied magnetic field. This model's phase transition is most visible in the magnetization, defined as
+where $h$ is an applied magnetic field and $\braket{ij}$ indicate neighbors. This model's phase transition is visible in the magnetization, defined as
 \begin{equation}
   M = \frac{1}{N}\Braket{\sum_{i} s_i}
   \label{eqn:magnetization}
 \end{equation}
-where the brackets indicate an average over the statistical ensemble of states, weighted by the Boltzmann factor $e^{-\beta H}$.
+where the brackets indicate a statistical average over all states, weighted by the Boltzmann factor $e^{-\beta H}$.
 
-The phase transition occurs for the following reason. For $h=0$, the Hamiltonian displays $s_i\rightarrow -s_i$ symmetry. If the thermodynamic system explores all of phase space, then the average thermodynamic state should possess the same symmetries of the Hamiltonian so that $M=0$. However, for low temperature we also expect the system to attain the lowest possible energy. This state consists of all spins up (or all spins down) has $M = 1$ (or $-1$), which violates the expectation of no magnetization. The resolution to this apparent contradiction that there exists a critical temperature $T_c$ below which energetic considerations dominate and the crystal is magnetic ($|M|>0$), and above which the symmetry of phase space dominates and the crystal is not magnetic ($M = 0$).
+The phase transition occurs for the following reason. For $h=0$, the Hamiltonian displays $s_i\rightarrow -s_i$ symmetry. If the thermodynamic system explores all of phase space, then the average thermodynamic state should possess the same symmetries of the Hamiltonian so that $M=0$. However, at low temperature we also expect the system to attain the lowest possible energy, which consists of all spins up (or all spins down). Such a state has $M =\pm 1$ which violates the expectation of no magnetization. The resolution to this apparent contradiction that there exists a critical temperature $T_c$ below which energetic considerations dominate and the crystal is magnetic ($|M|>0$), and above which the symmetry of phase space dominates and the crystal is not magnetic ($M = 0$).
 
-The phenomenon of critical temperature has been generalized to other theories. In particular, if the system's variables are arranged as a members of a field $s(\bm x)$, then the free energy may be approximated as an integral over functions of $s(\bm x)$. This approximation is called Landau Field Theory and it yields a form which is readily able to create phase transitions. Taking the Ising model as an example, we could approximate the $s_i$ spins defined on discrete points $x_i$ as the field $s(\bm x)$ defined for any position $\bm x$. The original Hamiltonian contained translational, rotational, and $s\rightarrow-s$ symmetry, and therefore the free energy should as well. Expanding it in powers of $s(\bm x)$ guarantees the form
+The phenomenon of critical temperature has been generalized to other theories. In particular, if the system's variables are arranged as a members of a field $s(\bm x)$, then the free energy may be approximated as an integral over functions of $s(\bm x)$. This approximation is called Landau Field Theory and it yields a form which is readily able to create phase transitions. Taking the Ising model as an example, we approximate the $s_i$ spins defined on discrete points $x_i$ as the field $s(\bm x)$ defined for any position $\bm x$. The original Hamiltonian contained translational, rotational, and $s\rightarrow-s$ symmetry, and therefore the free energy should as well. Expanding its integrand in powers of $s(\bm x)$ guarantees the form
 \begin{equation}
-F \propto -\int d^d x \, \parens{(\nabla s(\bm x))^2 + A s(\bm x)^2 + B s(\bm x)^4 + \dots}
+F \propto -\int d^2 x \brackets{(\nabla s(\bm x))^2 + A s(\bm x)^2 + B s(\bm x)^4 + \dots}
 \label{eqn:landau}
 \end{equation}
-where $d$ is the number of dimensions of the lattice and $A$ and $B$ are arbitrary constants. If $A>0$, then free energy is minimized at every point by setting $s(\bm x)$. However, if $A<0$, then minimizing the free energy necessitates setting $s(\bm x)$ to some nonzero value, thereby magnetizing the crystal and creating a phase transition. In principle, all the parameters of the model including $A$ may depend on temperature. All that is necessary to describe a phase transition is therefore to write a form of $A$ which allows it to cross from positive to negative at a critical temperature $T_c$.
+where $A$ and $B$ are arbitrary constants. If $A>0$, then free energy is minimized at every point by setting $s(\bm x)=0$. However if $A<0$, then the average value of $s(\bm x)0$ is nonzero and the crystal is magnetized. In principle, all the parameters of the model including $A$ may depend on temperature, so any theory whose $A$ crosses from positive to negative contains a phase transition. 
 
-The utility of this field theory approximation is in its generality. All Ising-like models like it are Landau field theories and are all described by Eq~\ref{eqn:landau}, meaning they have the same near-critical-point behavior. This statement is independent of the lattice or interaction strengths; it depends only on the field $\bm s$ and the dimensionality of the lattice. A particular lattice's only unique properties its its values of $A$ and $B$; i.e., the value of its critical temperature.
+The utility of this field theory framework is in its generality. All Ising-like models are Landau field theories and are all described by Eq~\ref{eqn:landau}, meaning they have the same near-critical-point behavior. This statement is independent of the lattice or interaction strengths; it depends only on the field $\bm s$ and the dimensionality of the lattice. A particular lattice's only unique properties its its values of $A$ and $B$; i.e., the value of its critical temperature.
 
-The solution to a spin model depends on the lattice on which the model is defined. For example, an exact solution exists for the two-dimensional Ising model defined on the square lattice which yields an exact formula for the critical temperature. In the absence of a full solution, a series expansions in $\beta$ (valid at high temperature) or $e^{-\beta}$ (valid at low temperature) can be written for the model's thermodynamical quantities. For self-dual lattices such as the square lattice, the coefficients of the high- and low-temperature expansions are the same --- a phenomenon known as Kramers-Wannier duality \cite{kramers}. This duality leads to an analytical solution for the critical temperature even in the absence of a full solution. Even for lattices which are not self-dual, it is sometimes possible to use a similar technique to relate the series expansions of the lattice and its dual to each other. This can be done for the hexagonal lattice, for example, which is dual to the triangular lattice \cite{bhattacharjee1995fifty}.
+% The solution to a spin model depends on the lattice on which the model is defined. For example, an exact solution exists for the two-dimensional Ising model defined on the square lattice which yields an exact formula for the critical temperature. In the absence of a full solution, a series expansions in $\beta$ (valid at high temperature) or $e^{-\beta}$ (valid at low temperature) can be written for the model's thermodynamical quantities. For self-dual lattices such as the square lattice, the coefficients of the high- and low-temperature expansions are the same --- a phenomenon known as Kramers-Wannier duality \cite{kramers}. This duality leads to an analytical solution for the critical temperature even in the absence of a full solution. Even for lattices which are not self-dual, it is sometimes possible to use a similar technique to relate the series expansions of the lattice and its dual to each other. This can be done for the hexagonal lattice, for example, which is dual to the triangular lattice \cite{bhattacharjee1995fifty}.
 
-In more complicated crystals, however, the only available approaches to computing $T_c$ are numerical. For example, the Penrose lattice consists of two tiles which fill the two-dimensional plane aperiodically, making it difficult to model the system analytically. Ref. \cite{penrose-ising} computes magnetism as a function of temperature using numerical methods and finds that the aperiodic nature of the lattice does not affect the physics at a qualitative level, since $M(T)$ inherits most of its properties from the very general Landau theory.
+In complicated crystals, the only available approaches to computing this $T_c$ are numerical. For example, the Penrose lattice consists of two tiles which fill the two-dimensional plane aperiodically, making it difficult to model the system analytically. Ref. \cite{penrose-ising} computes magnetism as a function of temperature using numerical methods and finds that the aperiodic nature of the lattice does not affect the physics at a qualitative level, since $M(T)$ inherits most of its properties from the general Landau theory.
 
-Recently, the first \textit{single} tile which fills the plane aperiodically has been discovered, and named the einstein tile (German for ``one stone'') (figure \ref{fig:einstein}) \cite{smith2023aperiodic}. An interesting fact about the einstein tile is that its dimensions are adjustable. The tile consists of two side lengths $a$ and $b$, and any ratio of $a/b$ leads to an aperiodic tiling except $a/b=0$, 1, or $\infty$. If we treat the spin-spin interaction as weaker across the longer bonds, then this $a/b$ ratio represents a free parameter of the crystal, so that the critical temperature is a function of $a/b$. The phase diagram of $T_c(a/b)$ is therefore an intrinsic property of the einstein tiling, more so than the commonplace behavior of $M(T)$.
+Recently, the first \textit{single} tile which fills the plane aperiodically has been discovered, and named the einstein tile (German for ``one stone'') (figure \ref{fig:einstein}) \cite{smith2023aperiodic}. An interesting fact about the einstein tile is that its dimensions are adjustable. The tile consists of two side lengths $a$ and $b$, and any ratio of $a/b$ leads to an aperiodic tiling except $a/b=0$, 1, or $\infty$. If we treat the spin-spin interaction as dependent on bond length, then this $a/b$ ratio represents a free parameter of the model, so that the critical temperature is a function of $a/b$. The phase diagram of $T_c(a/b)$ is therefore an intrinsic property of the einstein tiling, and more flexible than the behavior of $M(T)$.
 
 \begin{figure}
   \centering
@@ -65,21 +66,21 @@ Recently, the first \textit{single} tile which fills the plane aperiodically has
   \label{fig:einstein}
 \end{figure}
 
-In this final project, we use numerical methods to compute the phase diagram $T_c(a/b)$ for the einstein tile under the Ising model and two similar models. We also compute the phase diagram for a rectangular lattice with bond lengths $a$ and $b$ to compare to the einstein lattice phase diagram, later using this calculation to solve for the one-dimensional transverse Ising model phase transition. The structure of the paper is as follows: in section \ref{sec:spin-models}, we briefly review the spin models. In section \ref{sec:wolff} we discuss the numerical methods used to compute $T_c$. We present the phase diagrams in section \ref{sec:results}, followed by section \ref{sec:tim} on the transverse Ising model. We conclude with section \ref{sec:conclusion}.
+In this final project, we use numerical methods to compute the phase diagram $T_c(a/b)$ for the einstein tile under the Ising model and two similar models. The spin models are discussed in section \ref{sec:spin-models} and the numerical methods in section \ref{sec:wolff}. We also compute the phase diagram for a rectangular lattice to compare to the einstein lattice phase diagram in section \ref{sec:results}, later using this calculation to solve for the one-dimensional transverse Ising model in section \ref{sec:tim}. We conclude with section \ref{sec:conclusion}.
 
 
 \section{Spin models}
 \label{sec:spin-models}
 
-In addition to the Ising model Hamiltonian (Eq.~\ref{eqn:ising}), we study the XY model which consists of promoting $s_i$ to a two-dimensional unit vector defined at every lattice point. The interaction term in the Hamiltonian becomes $\bm s_i \cdot \bm s_j$. This XY model has different $T_c$ than the Ising model and can even contain vortices, which are topologically protected quasi-particles where the curl of $\bm s_i$ is nonzero. A third spin model is the Heisenberg model, which is similar to the XY model except that $s_i$ is promoted to a three-dimensional unit vector. Unlike the XY model, the Heisenberg model may not display a true phase transition in the thermodynamic limit \cite{tomita2014finite}. Nevertheless, it has phase-transition-like behavior in that $M$ experiences a large drop in a small temperature range. The Ising, XY, and Heisenberg models have progressively more degrees of freedom, and their critical temperatures are therefore progressively lower.
+In addition to the Ising model Hamiltonian (Eq.~\ref{eqn:ising}), we study the XY model which consists of promoting $s_i$ to a two-dimensional unit vector defined at every lattice point. The interaction term in the Hamiltonian becomes $\bm s_i \cdot \bm s_j$. A third spin model is the Heisenberg model, which is similar to the XY model except that $s_i$ is promoted to a three-dimensional unit vector. These models are all different in that they have progressively more spin degrees of freedom (DOFs), leading to progressively lower $T_c$. Each model also has specialized features, like the XY model's topologically protected vortices and the Heisenberg model's pseudo-phase transition \cite{tomita2014finite}, but these are beyond the scope of this report.
 
-A fourth spin model is the Transverse Ising Model (TIM), which consists of replacing $s_i$ in Eq.~\ref{eqn:ising} with the Pauli matrices $\bm \sigma_i$ and $\bm \sigma_j$ and interpreting the result as a quantum Hamiltonian. A simple proof using the path integral approach (section \ref{sec:tim}) shows that the $d$-dimensional TIM is equivalent to a classical Ising model in $d+1$ dimensions in the limit of a very strong interaction strength in the extra dimension. Thus, critical temperatures for all four of these models can be found using the same techniques.
+A fourth spin model is the Transverse Ising Model (TIM), which consists of replacing $s_i$ in Eq.~\ref{eqn:ising} with the Pauli matrices $\bm \sigma_i$ and $\bm \sigma_j$ and interpreting the result as a quantum Hamiltonian. A simple proof (section \ref{sec:tim}) shows that the TIM is equivalent to a classical Ising model, so critical temperatures for all four of these models can be found using the same techniques.
 
 Beyond the magnetization $M$, another interesting property of a spin model is its susceptibility $\chi = \frac{dM}{dh}$. Even in a model which sets $h=0$, $\chi$ can be achieved by explicitly differentiating Eq.~\ref{eqn:magnetization}, including the $e^{-\beta H}$ weight in the average. This differentiation results in the zero-$h$ limit of
 \begin{equation}
   \chi = \frac{\partial M}{\partial h} = \frac{1}{N}\Braket{\sum_i(s_i - M)^2}.
 \end{equation}
-This is a special case of the fluctuation-dissipation theorem, which states that a driving field $h$ causes fluctuations in the driven variable $M$ which are proportional to the susceptibility $\chi$. A spin model is most susceptible to magnetic field near $T_c$, because the presence of a magnetic field changes the value of $T_c$ and therefore can greatly change the magnetization of a system near $T_c$. In particular, the susceptibility diverges at the critical temperature and otherwise falls off to zero.
+This is a special case of the fluctuation-dissipation theorem, which states that a driving field $h$ causes fluctuations in the driven variable $M$ which are proportional to the susceptibility $\chi$. A spin model is most susceptible to magnetic field near $T_c$, because the presence of a magnetic field changes the value of $T_c$ and therefore can greatly change the magnetization of a system near $T_c$. In particular, the susceptibility diverges at $T_c$ and otherwise falls off to zero.
 
 
 \section{Cluster Monte Carlo Methods: the Wolff Algorithm}
@@ -87,9 +88,9 @@ This is a special case of the fluctuation-dissipation theorem, which states that
 
 To find the critical temperature of the einstein lattice, we must numerically compute the ensemble average of Eq.~\ref{eqn:magnetization}. This average is extremely expensive to compute because the number of states in the ensemble is $2^N$ for the Ising model. However, approximate results can be obtained by computing the sum over a much smaller, random selection of states $K$. This approximation technique is called a Monte Carlo method.
 
-The method of selecting states for $K$ is critical to the accuracy of a Monte Carlo method. It needs to add states $\psi$ to $K$ with some probability $P(\psi)$ which prefers states that are representative of the full ensemble, otherwise the convergence of the ensemble average will be poor. Many states are not representative, making it difficult to find a new state $\psi$ which has high enough $P(\psi)$ to be added to $K$. One way to resolve this problem is to make $\psi$ very similar to a state $\phi$ already in $K$. Assuming $\phi$ is representative of the ensemble, then $\psi$ is also likely to be represented by the ensemble. We then add $\psi$ to $K$ with some probability $P(\phi \rightarrow \psi)$, which is a function we discuss in the next paragraph. The technique of using previous states $\phi$ to create a new state $\psi$ is called a Markov Chain Monte Carlo method (MCMC).
+The method of selecting states for $K$ is critical to the accuracy of a Monte Carlo method. It needs to add states $\psi$ to $K$ with some probability $P(\psi)$ which prefers states that are representative of the full ensemble, otherwise the convergence of the ensemble average will be poor. Many states are not representative, making it difficult to find a new state $\psi$ which has high enough $P(\psi)$ to be added to $K$. One way to resolve this problem is to make $\psi$ very similar to a state $\phi$ already in $K$ --- a technique known as a Markov Chain Monte Carlo method (MCMC). Assuming $\phi$ is representative of the ensemble, then $\psi$ is also likely to be represented by the ensemble. We then add $\psi$ to $K$ with some probability $P(\phi \rightarrow \psi)$.
 
-For an MCMC to be correct, $P(\phi \rightarrow \psi)$ must be reversible, meaning that the probability to go from $\phi$ to $\psi$ must be equal to the probability to go from $\psi$ to $\phi$. This condition is necessary to prevent $K$ from getting stuck in an unrepresentative region of phase space. The probability to go from $\phi$ to $\psi$ is the probability for the MCMC to be at state $\phi$ in the first place times the probability to switch to $\psi$: $P(\phi \rightarrow \psi)P(\phi)$. Thus, detailed balance requires
+For an MCMC to be correct, $P(\phi \rightarrow \psi)$ must be reversible, meaning that the probability to go from $\phi$ to $\psi$ must be equal to the probability to go from $\psi$ to $\phi$. This condition is necessary to prevent $K$ from getting stuck in an unrepresentative region of phase space. The probability to go from $\phi$ to $\psi$ is the probability for the MCMC to be at state $\phi$ in the first place times the probability to switch to $\psi$. Thus, detailed balance requires
 \begin{equation}
   P(\phi \rightarrow \psi)P(\phi) = P(\psi \rightarrow \phi)P(\psi)
   \label{eqn:detailed-balance}
@@ -103,46 +104,46 @@ There are many methods of generating new states, but the one we will use in this
 \end{equation}
 For every spin $j$ which was added to the cluster, it then uses the same equation to assign $j$'s neighbors to the cluster until every neighbor has been rejected. At that point, the cluster's spins are flipped to form the new state $\psi$. Ref.~\cite{wolff1989collective} confirms that Eq.~\ref{eqn:wolff-algo} satisfies the detailed balance constraint and therefore is a good MCMC.
 
-For the XY model, Eq.~\ref{eqn:wolff-algo} must be modified to handle vector-valued spins. The approach is to choose a random vector $\bm r$ as a direction against which to compare to spins, so that
+For the XY and Heisenberg models, Eq.~\ref{eqn:wolff-algo} must be modified to handle vector-valued spins. The approach is to choose a random unit vector $\bm r$ as a direction against which to compare to spins, so that
 \begin{equation}
   P(i,j) = 1 - \exp\parens{\mathrm{min}\left[0, 2\beta J (\bm r \cdot \bm s_i)(\bm r \cdot \bm s_j) \right]}.
 \end{equation}
 For consistency, we keep $\bm r$ the same throughout the cluster, but for the next cluster we re-draw a new $\bm r$.
 
-A third and final extension is necessary to the Wolff algorithm in order to handle quantum spin models. As mentioned above, the TIM in two dimensions is equivalent to the Ising model in three dimensions where interaction strengths $J$ are very strong in the new direction. We could therefore stack many two-dimensional crystals to form a three-dimensional crystal on which we run the Wolff algorithm, but this is inefficient because the large $J$ along the third axis will make the clusters grow large in this direction. Ref.~\cite{blote2002cluster} speeds up the process by analytically computing the behavior of the Wolff algorithm along the third axis in the limit of large $J$. The classical Wolff algorithm can then be run on the two-dimensional lattice while the spins on the third axis are set according to this analytical result.
+% A third and final extension is necessary to the Wolff algorithm in order to handle quantum spin models. As mentioned above, the TIM in two dimensions is equivalent to the Ising model in three dimensions where interaction strengths $J$ are very strong in the new direction. We could therefore stack many two-dimensional crystals to form a three-dimensional crystal on which we run the Wolff algorithm, but this is inefficient because the large $J$ along the third axis will make the clusters grow large in this direction. Ref.~\cite{blote2002cluster} speeds up the process by analytically computing the behavior of the Wolff algorithm along the third axis in the limit of large $J$. The classical Wolff algorithm can then be run on the two-dimensional lattice while the spins on the third axis are set according to this analytical result.
 
-\section{Phase Diagrams}
+\section{Results}
 \label{sec:results}
 
 We implemented the Wolff algorithm with a custom code base \footnote{\url{https://github.com/jack-dinsmore/quasing-model}} and executed for a variety of spin models and crystals. Except when stated otherwise, we used a finite-size lattice with initial conditions of random spins. Magnetization $M$ and susceptibility $\chi$ measurements were collected every 16 cluster flips to prevent autocorrelation. 10,000 $M$ and $\chi$ measurements were made when $M$ was small, and when $M$ was large we made 1,000 measurements because the algorithm was found to be more stable for $T< T_c$.
 
-The upper left panel of Figure \ref{fig:square} shows the magnetization $M$ and susceptibility $\chi$ of the Ising, XY, and Heisenberg models executed on a square lattice as a function of the lattice width $L = \sqrt{N}$. The magnetization drops rapidly near $T_c$, shown as vertical dotted lines. The location of these transitions is not perfect, and $M$ it is not strictly zero for $T<T_c$ due to finite-size effects. Larger lattice sizes lead to smaller $M$ for $T<T_c$. The XY and Heisenberg models have substantially lower $T_c$ due to the increased degrees of freedom of the spin system. Furthermore, $M$ approaches its low-temperature limit of 1 linearly for the Heisenberg and XY models, while the approach is exponential for the Ising model. This is a qualitative difference between the Ising and XY models.
+The upper left panel of Figure \ref{fig:square} shows the magnetization $M$ and susceptibility $\chi$ of the Ising, XY, and Heisenberg models executed on a square lattice with periodic boundary conditions as a function of the temperature $T$. The magnetization drops rapidly near $T_c$, shown as vertical dotted lines, though the drop is not immediate due to finite-size effects. The XY and Heisenberg models have substantially lower $T_c$ due to the increased DOFs of the spin system. Furthermore, $M$ approaches its low-temperature limit of 1 linearly for the Heisenberg and XY models, while the approach is exponential for the Ising model. This is a qualitative difference between the Ising and XY models.
 
 \begin{figure*}
   \centering
   \includegraphics[width=0.49\linewidth]{../figs/square.pdf}\hfill
   \includegraphics[width=0.49\linewidth]{../figs/penrose.pdf}
-  \caption{Magnetization and susceptibility as a function of $T_c$ under the XY and Ising models. \textit{Left}: A square lattice with $N=128^2=16,384$ sites. \textit{Right}: A Penrose lattice with $N=21,316$ sites.}
+  \caption{Magnetization and susceptibility as a function of $T_c$ under the XY and Ising models. \textit{Left}: A square lattice with $N=128^2=16,384$ sites. \textit{Right}: A Penrose lattice with $N=21,316$ sites. The three spin models yield very different predictions but the two crystals are similar due to their field theory explanation.}
   \label{fig:square}
 \end{figure*}
 
-The susceptibility in the bottom left panel produces a maximum at $T_c$, decaying to zero more rapidly on the low-temperature side than high-temperature. For an infinite lattice, the peak will be likewise infinite, but it is blunted by finite $N$. The peak in susceptibility can be used as a measure of the location of $T_c$, as can the point of maximum slope of $M$.
+The susceptibility $\chi$ in the bottom left panel produces a maximum at $T_c$. For the Ising model, the decay to zero more is more rapid on the low-temperature side than high-temperature, though the reverse is true for the XY and Heisenberg models. For an infinite lattice, the peak in $\chi$ will be likewise infinite, though here it is blunted by finite $N$.
 
-In both crystals and both models, the point of maximum susceptibility and maximum $dM/dT$ occur at approximately the same location. For the sake of approximating the critical temperature, we take the $T$ point at which the steepest line tangent to the $M(T)$ curve intersects $M=0.5$. The critical temperatures obtained from this approximation are shown in table \ref{tab:tc}. These temperatures are very close to the true values known for the square lattice: For the Ising model, the Onsager solution gives $T_c = \frac{2}{\ln(1 + \sqrt{2})} \approx 2.2691$ in units where $J=k_B=1$, and for the XY model MCMC methods give $T_c \approx 0.8816$. The Heisenberg model does not have a true phase transition, but this fact is difficult to verify in a lattice of finite size, which cannot display true phase transitions until $N\rightarrow \infty$. 
+For the sake of approximating $T_c$, we take the $T$ point at which the steepest line tangent to the $M(T)$ curve intersects $M=0.5$. The critical temperatures obtained from this approximation are shown in table \ref{tab:tc}. These temperatures are very close to the true values known for the square lattice: For the Ising model, the Onsager solution gives $T_c = \frac{2}{\ln(1 + \sqrt{2})} \approx 2.2691$ in units where $J=k_B=1$, and for the XY model MCMC methods give $T_c \approx 0.8816$. The Heisenberg model does not have a true phase transition, but this fact is difficult to verify in a lattice of finite size, which never have true phase transitions in any case. 
 \begin{table}
   \centering
-  \begin{tabular}{c|cc}
+  \begin{tabular}{c|ccc}
     \hline \hline
-    & Square & Penrose \\ \hline
-    Ising & 2.26 & 2.36\\
-    XY & 0.928 & 0.943\\
-    Heisenberg & 0.493 & 0.462\\ \hline \hline
+    & Square & Penrose & Einstein\\ \hline
+    Ising & 2.26 & 2.36 & 0.396\\
+    XY & 0.928 & 0.943 & 0.130\\
+    Heisenberg & 0.493 & 0.462 & 0.0548\\ \hline \hline
   \end{tabular}
-  \caption{Critical temperatures for the Ising, XY, and Heisenberg models defined on the square and Penrose lattices in units where $J = k_B = 1$. These values are very close to the true values (see text).}
+  \caption{Critical temperatures $T_c$ for the Ising, XY, and Heisenberg models defined on the square and Penrose lattices in units where $J = k_B = 1$. These values are very close to the true values (see text). Also shown are $T_c$ for the einstein lattice with $\eta=-\frac{1}{3}$ as depicted in figure \ref{fig:einstein}.}
   \label{tab:tc}
 \end{table}
 
-To demonstrate that the $M(T)$ relationship is not strongly dependent on the lattice, we also compute the same quantities for the Penrose lattice, shown in the right two panels of figure \ref{fig:square}. We see the same behavior in how $M$ and $\chi$ approach $T=0$ and $\infty$. The behavior near $T_c$ is slightly different in the steepness of the curves due to the difference in the number of sites. The major difference between the two is the actual value of $T_c$, which is slightly higher for Penrose. One potential explanation is that the average Penrose lattice site is connected to more bonds than the average square lattice site. This could lead to a larger effective spin coupling which allows the critical temperature to rive.
+To demonstrate that the $M(T)$ relationship is not strongly dependent on the lattice, we also compute the same quantities for the Penrose lattice, shown in the right two panels of figure \ref{fig:square}. The same limiting behavior of $\chi$ and $M$ is present in both crystals, with slight changes in the steepness of the curves due to the difference in $N$. The major difference between the two is the actual value of $T_c$, which is slightly higher for Penrose (table \ref{tab:tc}). This confirms the result of Ref.~\cite{penrose-ising}.
 
 The square lattice can be stretched into a rectangular lattice by allowing the horizontal and vertical bonds to differ in length. Assigning different interaction strengths $J_1$ and $J_2$ to the two bond lengths gives a free parameter $J_1/J_2$. If we let $J \propto \ell^{-2}$ where $\ell$ is the bond length, then the phase diagram is further parameterized by the length ratio $a/b$.
 
@@ -153,30 +154,31 @@ Let us define the anisotropy $\eta$ of the lattice as
 \end{equation}
 We fix the product of the lengths $ab=1$, so that 
 \begin{equation}
-  a^2 = \tan\brackets{\frac{\pi}{4}\parens{1+\eta}},\qquad b^2 = \tan\brackets{\frac{\pi}{4}\parens{1-\eta}}
+  a^2 = \tan\brackets{\frac{\pi}{4}\parens{1+\eta}},\qquad b^2 = \tan\brackets{\frac{\pi}{4}\parens{1-\eta}}.
 \end{equation}
-
-. Then $\eta \in (-1,1)$ and $\eta=0$ implies $a=b$. For the square lattice in particular, rotational symmetry guarantees that the phase diagram $T_c(\eta)$ is symmetric under $a\leftrightarrow b$, or $\eta \rightarrow -\eta$.
+Then $\eta \in (-1,1)$ and $\eta=0$ implies $a=b$. For the square lattice in particular, rotational symmetry guarantees that the phase diagram $T_c(\eta)$ is symmetric under $a\leftrightarrow b$, or $\eta \rightarrow -\eta$.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{../figs/rect-phase.pdf}
-  \caption{The phase diagram of the rectangular lattice as a function of the anisotropy $\eta$, where $\eta = 0$ is the square lattice. The Ising and XY model $T_c$ peak at $\eta \approx 1/3$ and $1/4$ respectively, while the Heisenberg model $T_c$ is constant until $\eta \approx 1/6$. This function is even due to the rotational symmetry of a rectangular lattice.}
+  \caption{The phase diagram of the rectangular lattice as a function of the anisotropy $\eta$, where $\eta = 0$ is the square lattice. This function is even due to the rotational symmetry of a rectangular lattice.}
   \label{fig:rect-phase}
 \end{figure}
 
-Figure \ref{fig:rect-phase} shows the critical temperature as a function of $\eta$ under the Ising, XY, and Heisenberg models. As expected, the result is symmetric around $\eta \rightarrow -\eta$. Anisotropy appears to increase the critical temperature near $\eta = 0$ in the Ising and XY models, though this trend must turn over at some $\eta$ to achieve a $T_c\rightarrow 0$ value in the limit as $\eta \rightarrow \pm 1$. For the Ising model, the turnover occurs at $\eta=\pm\frac{1}{3}$. For the XY model, it occurs at $\eta = \pm \frac{1}{3}$. For the Heisenberg model, $T_c$ is constant to within a fraction of a percent until $\eta \approx 0.15$ when $T_c$ begins to decrease. All of these turnover values of $\eta$ may depend on the length $L$ of the lattice. In the $N\rightarrow \infty$ limit, a series expansion approach may help to reveal why certain values of $\eta$ change the behavior of $T_c$.
-
-A similar procedure shows the phase diagram for the einstein tiling, where $a$ and $b$ are now the two lengths shown in figure \ref{fig:einstein}. The phase diagram is shown in figure \ref{fig:einstein-phase}. In this case, anisotropy decreases the critical temperature in every model so that the maximum anisotropy occurs at $\eta = 0$, which corresponds to a regular lattice. The critical temperature falls so quickly that $\eta = -1/3$, which is the value of $\eta$ depicted in figure \ref{fig:einstein}, already has $T_c \approx 0$. This is due to the relatively low coordination number of each site in the einstein tiling; many sites are connected to the minimum two bonds whereas the Penrose and square model had average coordination number of 4 in the $N\rightarrow \infty$ limit. Since more connected lattices have stronger spin interactions, this is qualitatively similar to fixing $J$. Dimensional analysis requires that the critical value of any crystal is proportional to $\beta_c J = J/T_c$ so that increasing $J$ implies increasing $T_c$.
-
-Surprisingly, $T_c(\eta)$ possesses approximate $\eta\rightarrow -\eta$ symmetry, even though $\eta$ and $-\eta$ represent different tilings. This suggests the presence of some greater symmetry in the einstein tiling which has not yet been remarked. Other models defined on the einstein tiling do not contain this symmetry. The Ising and Heisenberg display slight deviations from $\eta\rightarrow -\eta$ symmetry; it is possible that the symmetry only appears in the XY case.
+Figure \ref{fig:rect-phase} shows $T_c$ as a function of $\eta$ for the rectangular lattice under the Ising, XY, and Heisenberg models. As expected, the result is symmetric around $\eta \rightarrow -\eta$. Anisotropy appears to increase $T_c$ near $\eta = 0$ in the Ising and XY models, though this trend turns over at some $\eta$ to achieve the $T_c\rightarrow 0$ value in the limit as $\eta \rightarrow \pm 1$. For the Ising model, the turnover occurs at $\eta\approx \pm 0.625$ after which $T_c$ falls to zero rapidly. For the XY model, the maximum value of $T_c$ occurs at $\eta \approx \pm 0.362$, which is half the turnover $\eta$ of the Ising model. However, $T_c$ falls only slowly until $\eta \approx 0.5$, after which $T_c$ drops to zero.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{../figs/einstein-phase.pdf}
-  \caption{The phase diagram of the einstein tiling as a function of the anisotropy $\eta$. An unexpected $\eta \rightarrow -\eta$ symmetry has appeared. The einstein lattice depicted in figure \ref{fig:einstein} had $\eta = -1/3$.}
+  \caption{The phase diagram of the einstein tiling as a function of the anisotropy $\eta$. The temperature is even after a shift in $\eta$.}
   \label{fig:einstein-phase}
 \end{figure}
+
+For the Heisenberg model, $T_c$ is maximal at $\eta=0$, though it remains constant to within a fraction of a percent until $\eta \approx 1/3$ at which point $T_c$ begins to decrease. All of these turnover values of $\eta$ may depend on the length $L$ of the lattice. In the $N\rightarrow \infty$ limit, a series expansion approach may help to reveal why these turnover values occur and how they depend on the number of DOFs of the spin model.
+
+A similar procedure shows the phase diagram for the einstein tiling with $N=7,047$ sites, where $a$ and $b$ are now the two lengths shown in figure \ref{fig:einstein}. The phase diagram is shown in figure \ref{fig:einstein-phase}. In this case, anisotropy decreases $T_c$ in every model so that the maximum anisotropy occurs near $\eta = 0$, which corresponds to a regular lattice. The $T_c$ of the lattice depicted in figure \ref{fig:einstein}, which has $\eta = -1/3$, is given in table \ref{tab:tc}. Critical temperatures for all $\eta$ are much lower than for any other crystals studied here because of the relatively low coordination number of each site in the einstein tiling. Many sites are connected to the minimum two bonds in einstein whereas the Penrose and square model had average coordination number of 4 in the $N\rightarrow \infty$ limit. Since more connected lattices have stronger spin interactions, this is qualitatively similar to fixing $J$. Dimensional analysis requires that the critical value of any crystal is proportional to $\beta_c J = J/T_c$ so that increasing $J$ implies increasing $T_c$.
+
+If $\eta$ is shifted by some amount $\eta \rightarrow \eta - x$, then $T_c(\eta)$ possesses $\eta\rightarrow -\eta$ symmetry. This is surprising because $\eta$ and $-\eta$ correspond to completely different lattices, suggesting the presence of some greater symmetry in the einstein tiling which has not yet been remarked. Other models defined on the einstein tiling do not contain this symmetry. The shift value $x$ is 0.029 for the Ising model, 0.052 for the XY model, and 0.033 for the Heisenberg model, though these shift values may depend on both numerical fluctuations of the MCMC and on the finite $N$ used.
 
 \section{Transverse Ising Model}
 \label{sec:tim}
@@ -186,7 +188,7 @@ Quantum mechanical models such as the TIM cannot in general be represented by th
   Z = \mathrm{Tr}\parens{e^{-\tau H}}.
   \label{eqn:quantum-partition}
 \end{equation}
-For clarity, the Hamiltonian for the TIM is defined as  
+For clarity, the Hamiltonian for the TIM is
 \begin{equation}
   H = -J \sum_{\braket{ij}}\bm \sigma_i \cdot \bm \sigma_j - h \sum_i\sigma_i^3
 \end{equation}
@@ -225,19 +227,19 @@ Since this expression is order $\epsilon$, we may write it as an exponential:
   \end{split}
 \end{equation}
 
-If we stack the $s$ and $s'$ spins into a square grid, then this is the classical partition function of a square Ising model, with different vertical and horizontal interaction strengths. The anisotropy is very high: $\eta \sim 1 - C\sqrt{\epsilon}$ for a constant $C$ under the definition of Eq.~\ref{eqn:anisotropy}.
+If we stack the $s$ and $s'$ spins into a square grid, then this is the classical partition function of a square Ising model, with different vertical and horizontal interaction strengths. The anisotropy is very high: $\eta \sim 1 - C\sqrt{\epsilon}$ for some constant $C$.
 
 We have already computed the behavior of the two-dimensional classical Ising model; according to figure \ref{fig:rect-phase}, $T_c\rightarrow 0$ as $\eta \rightarrow 1$, so that the critical temperature of the TIM is zero. This is a qualitative difference between the TIM and the classical Ising model; in the classial model, the only one of the two minima of the free energy must be occupied, forcing the system to choose either $M=+1$ or $M=-1$. In the quantum model both can be simultaneously occupied, with zero-energy fermion-like domain walls separating the two. Thus, the ordered phase has magnetization $M=0$ which cannot occur in the classical case.
 
 \section{Conclusion}
 \label{sec:conclusion}
-After an introduction to phase transitions in classical spin-like models, first in the case of the Ising model and then in the general case of a Landau field theory, we solve the Ising, XY, and Heisenberg models on a rectangular (regular) lattice and the einstein (aperiodic) tiling. As our method, we used the Wolff algorithm with moderate resolution and a modest number of iterations. Our results are therefore accurate only to a few figures of precision.
+After an introduction to phase transitions in classical spin-like models, first in the case of the Ising model and then in the general case of a Landau field theory, we solve the Ising, XY, and Heisenberg models on a rectangular lattice and the aperiodic Penrose and einstein tilings.
 
 The magnetization and susceptibility as a function of temperature were discussed and shown to be dramatically different between the models, though similar for different crystals. This was explained as a consequence of the Landau field theory explanation for phase transitions, which predicts that the behavior of a theory is sensitive to the number of degrees of freedom of the spin field and less to the structure of the lattice.
 
-Phase diagrams of the critical temperature as a function of the anisotropy of the lattice structure were then shown; these are not predicted by Landau field theory and therefore are much more dependent on the lattice structure.  Anisotropy was seen to increase the critical temperature of the square lattice, but decrease the critical temperature of the einstein tiling. The square lattice showed model-dependent turnover values of anisotropy where $T_c$ was stationary. The einstein tiling displayed approximate $\eta \rightarrow -\eta$ symmetry despite the fact that $\eta$ and $-\eta$ represent different lattices, indicative of a deeper self-symmetry to the lattice.
+Phase diagrams of the critical temperature as a function of the lattice anisotropy were shown; these are not predicted by Landau field theory and are therefore less theoretically constrained.  Anisotropy was seen to increase the critical temperature of the square lattice, but decrease the critical temperature of the einstein tiling. The rectangular lattice achieved maximum critical temperature at model-dependent ``turnover values'' of anisotropy, and the einstein tiling displayed unexpected symmetry after a model-dependent shift in the anisotropy. Understanding either of these features may require deeper investigation.
 
-Finally, we introduced a quantum model --- the Transverse Ising model (TIM) --- and showed that the one-dimensional TIM it is equivalent to the two-dimensional classical Ising model in the anisotropic limit. Our calculations had revealed a critical temperature of zero for this limit, indicating that the TIM is not magnetized at zero temperature. We explained that this is because the quantum nature of the TIM allows it to simultaneously occupy both the spin-up and spin-down minima of the free energy in the low-temperature limit. Thus, the thermodynamic state is ordered, full of fermionic domain walls which leave an overall magnetization of zero.
+Finally, we introduced a quantum Ising model --- the Transverse Ising model (TIM) --- and showed that the one-dimensional TIM it is equivalent to a two-dimensional classical anisotropic Ising model. We used our two-dimensional Ising model calculations to discuss the properties of the TIM and qualitatively contrasted the TIM with the classical models investigated here.
 
 \bibliography{cmt.bib}
 

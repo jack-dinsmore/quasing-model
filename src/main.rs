@@ -151,12 +151,12 @@ fn search<S: Spin>(lattice: &mut Lattice<S>, bottom: f32, top: f32,
 
 fn main() {
     // one();
-    rect::<Ising>(6.);
+    // rect::<Ising>(6.);
     einstein::<Ising>(0.8);
-    rect::<XY>(1.3);
-    einstein::<XY>(1.5);
-    rect::<Heisenberg>(0.9);
-    einstein::<Heisenberg>(0.4);
+    // rect::<XY>(1.3);
+    // einstein::<XY>(1.5);
+    // rect::<Heisenberg>(0.9);
+    // einstein::<Heisenberg>(0.4);
 }
 
 fn one() {
@@ -243,6 +243,7 @@ fn einstein<S: Spin>(tmax: f32) {
             for eta in eta_chunk {
                 println!("{}", eta);
                 let (size, func) = load_einstein("7k", get_t1_from_eta(eta), get_t2_from_eta(eta));
+                println!("{}", size);
                 let mut lattice = Lattice::<S>::new(size, &func);
                 let data = one_pass(&mut lattice, 0.01, tmax, 10000, 50);
                 data.save(&format!("einstein-{}-{:.8}", S::name(), eta));
